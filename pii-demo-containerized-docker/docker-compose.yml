@@ -1,0 +1,44 @@
+# =============================================================================
+# PII Masking Demo - Docker Compose (Ollama backend)
+#
+# Inference via Ollama on host (GPU) — container is a thin FastAPI client that
+# runs backend/main_ollama.py and reaches host Ollama at localhost:11434.
+# Modeled on the pharmacy demo: network_mode host + OLLAMA_* env.
+# (The legacy in-container llama-cpp GGUF backend / Dockerfile is preserved as
+#  docker-compose.yml.gguf-bak — it crashes on SM 12.1, hence the move to Ollama.)
+#
+# Usage:
+#   ./start.sh --build             # First time / after code changes
+#   ./start.sh                     # Subsequent runs
+#   docker compose down            # Stop everything
+#
+# Prerequisites:
+#   - Ollama running on host with tinyllama-pii + pii-detector models
+# =============================================================================
+
+services:
+  pii-demo:
+    build:
+      context: .
+      dockerfile: Dockerfile.ollama
+    container_name: pii-masking-demo
+    # Host network so the container reaches host Ollama at localhost:11434
+    # (same pattern as the pharmacy demo). Serves API + /app/ frontend on :8000.
+    network_mode: host
+    environment:
+      - OLLAMA_URL=http://localhost:11434
+      - BASE_MODEL_NAME=tinyllama-pii
+      - FINETUNED_MODEL_NAME=pii-detector
+      - PII_PORT=8000
+      - TOKENIZERS_PARALLELISM=false
+      - OMP_NUM_THREADS=4
+      # Host IP for clickable URLs — auto-detected by start.sh
+      - HOST_IP=${HOST_IP:-}
+    restart: on-failure
+    stop_grace_period: 30s
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s

@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maritime Surveillance Intelligence Generator | HP ZGX Nano</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --hp-blue: #0096D6;
+            --hp-dark-blue: #024AD8;
+            --navy-dark: #0a1628;
+            --navy-darker: #060d18;
+            --navy-panel: #0d1f35;
+            --navy-border: #1a3a5c;
+            --navy-highlight: #2563eb;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --classified-red: #dc2626;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--navy-darker);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(180deg, var(--navy-dark) 0%, var(--navy-darker) 100%);
+            border-bottom: 1px solid var(--navy-border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .hp-logo {
+            height: 32px;
+            
+        }
+
+        .header-title {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-title h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .header-title span {
+            font-size: 0.75rem;
+            color: var(--hp-blue);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .navy-logo {
+            height:40px;
+            margin-right: 1rem;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Classification Banner */
+        .classification-banner {
+            background: repeating-linear-gradient(
+                45deg,
+                var(--navy-darker),
+                var(--navy-darker) 10px,
+                rgba(34, 197, 94, 0.1) 10px,
+                rgba(34, 197, 94, 0.1) 20px
+            );
+            border-top: 2px solid var(--success);
+            border-bottom: 2px solid var(--success);
+            padding: 0.5rem;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--success);
+            letter-spacing: 0.1em;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 0;
+            min-height: calc(100vh - 120px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--navy-panel);
+            border-right: 1px solid var(--navy-border);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .panel {
+            background: var(--navy-dark);
+            border: 1px solid var(--navy-border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            background: rgba(37, 99, 235, 0.1);
+            border-bottom: 1px solid var(--navy-border);
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--hp-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .panel-content {
+            padding: 1rem;
+        }
+
+        /* Upload Area */
+        .upload-zone {
+            border: 2px dashed var(--navy-border);
+            border-radius: 8px;
+            padding: 2rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(37, 99, 235, 0.02);
+        }
+
+        .upload-zone:hover {
+            border-color: var(--hp-blue);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .upload-zone.dragover {
+            border-color: var(--success);
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        .upload-zone.has-image {
+            padding: 0.5rem;
+            border-style: solid;
+            border-color: var(--success);
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .upload-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .upload-text strong {
+            color: var(--hp-blue);
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 4px;
+            object-fit: contain;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        /* Region Select */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--navy-darker);
+            border: 1px solid var(--navy-border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--hp-blue);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Analyze Button */
+        .btn-analyze {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--hp-blue) 0%, var(--hp-dark-blue) 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .btn-analyze:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 150, 214, 0.3);
+        }
+
+        .btn-analyze:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-analyze.loading {
+            background: var(--navy-panel);
+        }
+
+        /* Results Area */
+        .results-area {
+            padding: 1.5rem 2rem;
+            overflow-y: auto;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Intelligence Report */
+        .intel-report {
+            background: var(--navy-panel);
+            border: 1px solid var(--navy-border);
+            border-radius: 8px;
+            overflow: hidden;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .report-header {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.2) 0%, rgba(37, 99, 235, 0.05) 100%);
+            border-bottom: 1px solid var(--navy-border);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .report-id {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--hp-blue);
+        }
+
+        .report-classification {
+            font-size: 0.75rem;
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            border: 1px solid var(--success);
+        }
+
+        .report-body {
+            padding: 1.5rem;
+        }
+
+        .report-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .report-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .report-section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 1px solid var(--navy-border);
+        }
+
+        .report-field {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .report-field-label {
+            color: var(--text-muted);
+        }
+
+        .report-field-value {
+            color: var(--text-primary);
+        }
+
+        .report-field-value.highlight {
+            color: var(--hp-blue);
+            font-weight: 500;
+        }
+
+        .analysis-content {
+            background: var(--navy-darker);
+            border: 1px solid var(--navy-border);
+            border-radius: 6px;
+            padding: 1rem;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+            white-space: pre-wrap;
+        }
+
+        /* Loading Animation */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top-color: currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--navy-dark);
+            border-top: 1px solid var(--navy-border);
+            padding: 0.75rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-brand img {
+            height: 16px;
+            filter: brightness(0) invert(1);
+            opacity: 0.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid var(--navy-border);
+            }
+
+            .results-area {
+                min-height: 60vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        
+            <span class="demo-mark">Demo</span>
+
+            <div class="header-title">
+                <h1>Maritime Surveillance Intelligence Generator</h1>
+                <span>Powered by HP ZGX Nano AI Station</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <span class="demo-mark">Demo</span>
+            <div class="status-indicator">
+                <div class="status-dot" id="status-dot"></div>
+                <span id="status-text">System Ready</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="classification-banner">
+        UNCLASSIFIED // FOR DEMONSTRATION PURPOSES ONLY
+    </div>
+
+    <main class="main-container">
+        <aside class="sidebar">
+            <div class="panel">
+                <div class="panel-header">
+                    <span>📡</span> Imagery Upload
+                </div>
+                <div class="panel-content">
+                    <div class="upload-zone" id="upload-zone">
+                        <input type="file" id="file-input" accept="image/*">
+                        <div id="upload-placeholder">
+                            <div class="upload-icon">🛰️</div>
+                            <div class="upload-text">
+                                <strong>Click to upload</strong> or drag and drop<br>
+                                Reconnaissance imagery (PNG, JPG)
+                            </div>
+                        </div>
+                        <img id="preview-image" class="preview-image" style="display: none;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <span>🌐</span> Operating Region
+                </div>
+                <div class="panel-content">
+                    <div class="form-group">
+                        <label class="form-label" for="region-select">Select AOR</label>
+                        <select class="form-select" id="region-select">
+                            <option value="western_pacific">Western Pacific</option>
+                            <option value="south_china_sea">South China Sea</option>
+                            <option value="arabian_gulf">Arabian Gulf / Persian Gulf</option>
+                            <option value="gulf_of_aden">Gulf of Aden</option>
+                            <option value="eastern_mediterranean">Eastern Mediterranean</option>
+                            <option value="north_atlantic">North Atlantic</option>
+                            <option value="indo_pacific">Indo-Pacific Region</option>
+                            <option value="california_coast">California Coast (TRAINING)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="custom-instructions">Additional Guidance</label>
+                        <textarea 
+                            class="form-textarea" 
+                            id="custom-instructions" 
+                            placeholder="Optional: specific focus areas, vessel types of interest, etc."
+                        ></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-analyze" id="analyze-btn" disabled>
+                <span class="btn-text">Generate Intelligence Report</span>
+            </button>
+        </aside>
+
+        <section class="results-area" id="results-area">
+            <div class="empty-state" id="empty-state">
+                <div class="empty-state-icon">📋</div>
+                <h3>No Report Generated</h3>
+                <p>Upload reconnaissance imagery and select an operating region to generate an intelligence report.</p>
+            </div>
+            <div id="report-container" style="display: none;"></div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-brand">
+            <svg height="16" viewBox="0 0 100 100" fill="currentColor">
+                <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="4"/>
+                <text x="50" y="62" text-anchor="middle" font-size="32" font-weight="bold">HP</text>
+            </svg>
+            <span>ZGX Nano AI Station</span>
+        </div>
+        <div>
+            <span id="timestamp"></span>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const uploadZone = document.getElementById('upload-zone');
+        const fileInput = document.getElementById('file-input');
+        const previewImage = document.getElementById('preview-image');
+        const uploadPlaceholder = document.getElementById('upload-placeholder');
+        const regionSelect = document.getElementById('region-select');
+        const customInstructions = document.getElementById('custom-instructions');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const resultsArea = document.getElementById('results-area');
+        const emptyState = document.getElementById('empty-state');
+        const reportContainer = document.getElementById('report-container');
+        const statusDot = document.getElementById('status-dot');
+        const statusText = document.getElementById('status-text');
+        const timestampEl = document.getElementById('timestamp');
+
+        let selectedFile = null;
+
+        // Update timestamp
+        function updateTimestamp() {
+            const now = new Date();
+            timestampEl.textContent = now.toISOString().replace('T', ' ').substring(0, 19) + 'Z';
+        }
+        updateTimestamp();
+        setInterval(updateTimestamp, 1000);
+
+        // File Upload Handlers
+        uploadZone.addEventListener('click', () => fileInput.click());
+
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('image/')) {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            selectedFile = file;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+                uploadPlaceholder.style.display = 'none';
+                uploadZone.classList.add('has-image');
+            };
+            reader.readAsDataURL(file);
+            
+            analyzeBtn.disabled = false;
+        }
+
+        // Analysis
+        analyzeBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+
+            // Update UI state
+            analyzeBtn.disabled = true;
+            analyzeBtn.classList.add('loading');
+            analyzeBtn.innerHTML = '<div class="spinner"></div><span>Analyzing Imagery...</span>';
+            statusDot.style.background = 'var(--warning)';
+            statusText.textContent = 'Processing...';
+
+            const formData = new FormData();
+            formData.append('image', selectedFile);
+            formData.append('region', regionSelect.value);
+            formData.append('custom_instructions', customInstructions.value);
+
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Analysis failed: ${response.statusText}`);
+                }
+
+                const report = await response.json();
+                displayReport(report);
+
+                statusDot.style.background = 'var(--success)';
+                statusText.textContent = 'Report Generated';
+
+            } catch (error) {
+                console.error('Analysis error:', error);
+                statusDot.style.background = 'var(--danger)';
+                statusText.textContent = 'Analysis Failed';
+                alert('Failed to analyze image: ' + error.message);
+            } finally {
+                analyzeBtn.disabled = false;
+                analyzeBtn.classList.remove('loading');
+                analyzeBtn.innerHTML = '<span class="btn-text">Generate Intelligence Report</span>';
+            }
+        });
+
+        function displayReport(report) {
+            emptyState.style.display = 'none';
+            reportContainer.style.display = 'block';
+
+            reportContainer.innerHTML = `
+                <div class="intel-report">
+                    <div class="report-header">
+                        <div>
+                            <div class="report-id">${report.report_id}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                                ${report.capture_time}
+                            </div>
+                        </div>
+                        <div class="report-classification">
+                            ${report.classification}
+                        </div>
+                    </div>
+                    <div class="report-body">
+                        <div class="report-section">
+                            <div class="report-section-title">Location Data [Determined from onboard GPS on drone]</div>
+                            <div class="report-field">
+                                <span class="report-field-label">Coordinates:</span>
+                                <span class="report-field-value highlight">${report.location.coordinates_dms}</span>
+                            </div>
+                            <div class="report-field">
+                                <span class="report-field-label">Decimal:</span>
+                                <span class="report-field-value">${report.location.coordinates_decimal.lat}, ${report.location.coordinates_decimal.lon}</span>
+                            </div>
+                            <div class="report-field">
+                                <span class="report-field-label">Grid Reference:</span>
+                                <span class="report-field-value">${report.location.grid_reference}</span>
+                            </div>
+                            <div class="report-field">
+                                <span class="report-field-label">Relative:</span>
+                                <span class="report-field-value">${report.location.relative_position}</span>
+                            </div>
+                            <div class="report-field">
+                                <span class="report-field-label">AOR:</span>
+                                <span class="report-field-value">${report.location.operating_region}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="report-section">
+                            <div class="report-section-title">Imagery Analysis</div>
+                            <div class="analysis-content">${escapeHtml(report.analysis)}</div>
+                        </div>
+
+                        ${report.token_usage ? `
+                        <div class="report-section" style="border-top: 1px solid var(--navy-border); padding-top: 1rem; margin-top: 1rem;">
+                            <div class="report-section-title">Token Consumption</div>
+                            <div style="display: flex; gap: 2rem; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">
+                                <div class="report-field">
+                                    <span class="report-field-label">Prompt:</span>
+                                    <span class="report-field-value">${report.token_usage.prompt_tokens.toLocaleString()}</span>
+                                </div>
+                                <div class="report-field">
+                                    <span class="report-field-label">Completion:</span>
+                                    <span class="report-field-value">${report.token_usage.completion_tokens.toLocaleString()}</span>
+                                </div>
+                                <div class="report-field">
+                                    <span class="report-field-label">Total:</span>
+                                    <span class="report-field-value highlight">${report.token_usage.total_tokens.toLocaleString()}</span>
+                                </div>
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Health check
+        async function checkHealth() {
+            try {
+                const response = await fetch('/api/health');
+                const data = await response.json();
+                if (data.model_loaded) {
+                    statusDot.style.background = 'var(--success)';
+                    statusText.textContent = 'Model Ready';
+                } else {
+                    statusDot.style.background = 'var(--warning)';
+                    statusText.textContent = 'Model Loading...';
+                }
+            } catch {
+                statusDot.style.background = 'var(--danger)';
+                statusText.textContent = 'Connection Error';
+            }
+        }
+
+        checkHealth();
+    </script>
+<script>
+// Demo Center iframe escape relay
+(function() {
+  if (window.parent === window) return; // not iframed, do nothing
+  window.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      window.parent.postMessage({ type: 'demo-shell-return' }, '*');
+    }
+  });
+})();
+</script>
+</body>
+</html>

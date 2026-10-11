@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZGX Demo Center — HP ZGX Nano G1n</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root{
+  --hp:#024AD8; --hp-lt:#3a6cdb;
+  --bg:#e4e9f0;
+  --sur:#eaeff5; --sur2:#dde5ee;
+  --bdr:#cad3df;
+  --txt:#334155; --dim:#6b7a90; --bright:#0f1f2e;
+  --green:#16a34a; --yel:#d97706; --red:#dc2626;
+  --shadow-light:rgba(255,255,255,0.7);
+  --shadow-dark:rgba(163,174,191,0.6);
+  --mono:'JetBrains Mono','Consolas',monospace;
+  --sans:'DM Sans','Segoe UI',-apple-system,sans-serif;
+
+  --ind-vision:#6366f1;
+  --ind-energy:#d97706;
+  --ind-defense:#0891b2;
+  --ind-healthcare:#dc2626;
+  --ind-security:#7c3aed;
+  --ind-construction:#ea580c;
+  --ind-language:#0d9488;
+  --ind-robotics:#2563eb;
+
+  --col-blue:#3b82f6;
+  --col-green:#16a34a;
+  --col-amber:#d97706;
+  --col-red:#dc2626;
+  --col-violet:#7c3aed;
+  --col-cyan:#0891b2;
+  --col-teal:#0d9488;
+  --col-orange:#ea580c;
+  --col-slate:#64748b;
+  --col-indigo:#6366f1;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--sans);background:var(--bg);color:var(--txt);min-height:100vh;font-size:13px;}
+
+/* HEADER */
+header{display:flex;align-items:center;gap:12px;padding:0 22px;height:56px;background:#e4e9f0;flex-shrink:0;position:sticky;top:0;z-index:100;border-top:3px solid #024AD8;box-shadow:0 4px 12px rgba(163,174,191,0.4);}
+.logo-wrap{width:42px;height:42px;border-radius:50%;background:#ffffff;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:4px 4px 8px rgba(163,174,191,0.6),-4px -4px 8px rgba(255,255,255,0.7);}
+.logo{width:50px;height:50px;border-radius:50%;object-fit:fill;display:block;}
+.brand{font-size:14px;font-weight:600;color:#2d3748;flex:1;line-height:1.3;letter-spacing:-0.01em;}
+.brand span{color:#718096;font-size:11px;font-weight:400;display:block;}
+.hdr-right{display:flex;align-items:center;gap:9px;margin-left:auto;}
+.pill{padding:5px 14px;border-radius:50px;background:var(--sur);color:var(--txt);font-family:var(--mono);font-size:11px;white-space:nowrap;border:none;box-shadow:4px 4px 8px var(--shadow-dark),-4px -4px 8px var(--shadow-light);}
+.pill.ok{color:var(--green);font-weight:600;}
+.btn-reset{padding:4px 14px;border-radius:50px;background:var(--bg);color:#dc2626;font-family:var(--mono);font-size:11px;font-weight:600;white-space:nowrap;border:1.5px solid #dc2626;cursor:pointer;box-shadow:4px 4px 8px var(--shadow-dark),-4px -4px 8px var(--shadow-light);transition:0.15s;}
+.btn-reset:hover{background:rgba(220,38,38,0.06);}
+.btn-reset:active{box-shadow:inset 2px 2px 4px var(--shadow-dark),inset -2px -2px 4px var(--shadow-light);}
+
+/* NAV */
+nav{display:flex;padding:0 22px;background:var(--sur);border-bottom:1px solid var(--bdr);box-shadow:0 4px 10px rgba(150,160,175,0.18);}
+.tab{padding:11px 20px;font-size:12px;font-weight:500;cursor:pointer;border:none;border-bottom:3px solid transparent;background:none;color:var(--dim);transition:0.15s;font-family:var(--sans);}
+.tab:hover{color:var(--hp);}
+.tab.active{color:var(--hp);border-bottom-color:var(--hp);font-weight:600;}
+.page{display:none;}.page.active{display:block;}
+
+/* FILTER ROW */
+.filter-row{display:flex;align-items:center;gap:10px;padding:16px 22px;background:var(--bg);border-bottom:1px solid rgba(163,174,191,0.25);flex-wrap:wrap;}
+.filter-label{font-size:10px;color:var(--dim);font-weight:700;letter-spacing:0.07em;text-transform:uppercase;margin-right:4px;}
+.fbtn{padding:7px 18px;border-radius:50px;border:none;background:var(--sur);color:var(--dim);font-size:11px;font-weight:500;cursor:pointer;transition:0.15s;font-family:var(--sans);box-shadow:4px 4px 8px var(--shadow-dark),-4px -4px 8px var(--shadow-light);}
+.fbtn:hover{color:var(--hp);}
+.fbtn.active{background:var(--hp);color:#fff;box-shadow:inset 2px 2px 4px rgba(0,0,0,0.25),inset -2px -2px 4px rgba(255,255,255,0.15);}
+
+.grid-wrap{padding:26px 22px 36px;}
+.demo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:24px;}
+
+/* CARD */
+.card{
+  background:var(--sur);border-radius:16px;display:flex;flex-direction:column;
+  transition:box-shadow 0.25s ease,transform 0.25s ease;position:relative;
+  border-top:1px solid rgba(255,255,255,0.6);border-left:1px solid rgba(255,255,255,0.3);
+  box-shadow:10px 10px 22px rgba(150,160,175,0.55),-10px -10px 22px rgba(255,255,255,0.7);
+  overflow:visible;
+}
+.card:hover{transform:translateY(-3px);box-shadow:14px 14px 28px rgba(150,160,175,0.6),-12px -12px 26px rgba(255,255,255,0.75);}
+.card.is-running{
+  box-shadow:0 0 20px rgba(2,74,216,0.40),0 0 40px rgba(2,74,216,0.15),
+             10px 10px 22px rgba(150,160,175,0.55),-10px -10px 22px rgba(255,255,255,0.7);
+  border-top-color:rgba(2,74,216,0.45);
+}
+.card.is-running .card-icon{box-shadow:inset 3px 3px 6px rgba(2,74,216,0.35),inset -3px -3px 6px rgba(255,255,255,0.7);background:rgba(2,74,216,0.06);}
+.card.is-running .card-icon svg{stroke:var(--hp);}
+.card-running-badge{display:none;align-items:center;gap:6px;padding:3px 11px;border-radius:50px;color:var(--hp);font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.04em;margin-left:6px;background:rgba(2,74,216,0.06);box-shadow:inset 2px 2px 4px rgba(150,160,175,0.4),inset -2px -2px 4px rgba(255,255,255,0.7);}
+.card.is-running .card-running-badge{display:inline-flex;}
+.card-running-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--hp);box-shadow:0 0 8px var(--hp);animation:dotPulse 1.4s ease-in-out infinite;}
+@keyframes dotPulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+.card-top{display:none;}
+.card-body{padding:20px 22px 14px;flex:1;display:flex;flex-direction:column;gap:13px;}
+.card-hdr{display:flex;align-items:flex-start;gap:14px;}
+
+.card-icon{
+  width:48px;height:48px;flex-shrink:0;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  background:color-mix(in srgb,var(--icon-color,var(--hp)) 8%,var(--sur));
+  box-shadow:inset 3px 3px 6px var(--shadow-dark),inset -3px -3px 6px var(--shadow-light);
+  transition:box-shadow 0.25s ease;
+}
+.card-icon svg{
+  width:24px;height:24px;
+  stroke:var(--icon-color,var(--hp));
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;fill:none;
+}
+/* legacy alias so any older selector still hits the icon well */
+.card-ico{width:48px;height:48px;flex-shrink:0;border-radius:12px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--icon-color,var(--hp)) 8%,var(--sur));box-shadow:inset 3px 3px 6px var(--shadow-dark),inset -3px -3px 6px var(--shadow-light);}
+.card-tg{flex:1;}
+.card-title{font-size:14px;font-weight:600;color:var(--bright);line-height:1.3;letter-spacing:-0.005em;}
+.card-industry{font-size:10px;color:var(--dim);font-family:var(--mono);letter-spacing:0.05em;margin-top:3px;text-transform:uppercase;}
+.card-desc{font-size:12px;color:var(--dim);line-height:1.65;}
+.card-tags{display:flex;flex-wrap:wrap;gap:6px;}
+
+/* TAGS — inset neumorphic pills, colored via data-color */
+.tag{
+  padding:3px 10px;border-radius:50px;font-family:var(--mono);font-size:10px;font-weight:500;
+  color:var(--col-slate);background:rgba(100,116,139,0.06);border:none;
+  box-shadow:inset 2px 2px 4px var(--shadow-dark),inset -2px -2px 4px var(--shadow-light);
+}
+.tag[data-color="blue"]   {color:var(--col-blue);   background:rgba(59,130,246,0.06);}
+.tag[data-color="green"]  {color:var(--col-green);  background:rgba(22,163,74,0.06);}
+.tag[data-color="amber"]  {color:var(--col-amber);  background:rgba(217,119,6,0.06);}
+.tag[data-color="red"]    {color:var(--col-red);    background:rgba(220,38,38,0.06);}
+.tag[data-color="violet"] {color:var(--col-violet); background:rgba(124,58,237,0.06);}
+.tag[data-color="cyan"]   {color:var(--col-cyan);   background:rgba(8,145,178,0.06);}
+.tag[data-color="teal"]   {color:var(--col-teal);   background:rgba(13,148,136,0.06);}
+.tag[data-color="orange"] {color:var(--col-orange); background:rgba(234,88,12,0.06);}
+.tag[data-color="slate"]  {color:var(--col-slate);  background:rgba(100,116,139,0.06);}
+.tag[data-color="indigo"] {color:var(--col-indigo); background:rgba(99,102,241,0.06);}
+
+.card-foot{padding:12px 22px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid rgba(202,211,223,0.5);background:transparent;}
+.card-meta{font-size:10px;font-family:var(--mono);color:var(--dim);line-height:1.55;}
+.card-meta strong{color:var(--txt);font-weight:600;display:block;font-size:11px;}
+.card-btns{display:flex;gap:8px;}
+
+/* BUTTONS */
+.btn{
+  padding:7px 16px;border:none;border-radius:50px;cursor:pointer;
+  font-family:var(--sans);font-size:10.5px;font-weight:600;letter-spacing:0.04em;
+  text-transform:uppercase;transition:0.15s;text-decoration:none;
+  display:inline-flex;align-items:center;gap:5px;white-space:nowrap;
+  background:var(--sur);color:var(--txt);
+  box-shadow:4px 4px 8px var(--shadow-dark),-4px -4px 8px var(--shadow-light);
+}
+.btn:hover{color:var(--hp);}
+.btn:active{box-shadow:inset 2px 2px 4px var(--shadow-dark),inset -2px -2px 4px var(--shadow-light);color:var(--hp);}
+.btn-outline{}
+.btn-primary,.btn-action{
+  background:var(--hp);color:#fff;
+  box-shadow:4px 4px 10px rgba(2,74,216,0.4),-4px -4px 10px rgba(255,255,255,0.6);
+}
+.btn-primary:hover,.btn-action:hover{color:#fff;filter:brightness(1.08);}
+.btn-primary:active,.btn-action:active{box-shadow:inset 2px 2px 5px rgba(0,0,0,0.25),inset -2px -2px 5px rgba(255,255,255,0.15);filter:none;}
+
+.btn-ghost{background:var(--sur);color:var(--dim);cursor:default;opacity:0.65;pointer-events:none;box-shadow:inset 2px 2px 4px var(--shadow-dark),inset -2px -2px 4px var(--shadow-light);}
+
+.btn-install{background:var(--sur);color:var(--green);box-shadow:4px 4px 8px var(--shadow-dark),-4px -4px 8px var(--shadow-light);}
+.btn-install:hover{color:var(--green);filter:brightness(0.96);}
+.btn-install:disabled{opacity:0.45;cursor:not-allowed;pointer-events:none;}
+.btn-installing{color:var(--yel);cursor:default;pointer-events:none;background:var(--sur);box-shadow:inset 2px 2px 4px var(--shadow-dark),inset -2px -2px 4px var(--shadow-light);}
+.btn-installed{color:var(--green);cursor:default;pointer-events:none;background:var(--sur);box-shadow:inset 2px 2px 4px var(--shadow-dark),inset -2px -2px 4px var(--shadow-light);}
+
+.btn-live{
+  background:var(--hp);color:#fff;pointer-events:auto;
+  box-shadow:0 0 20px rgba(2,74,216,0.5),0 0 40px rgba(2,74,216,0.18),
+             4px 4px 10px rgba(2,74,216,0.4),-4px -4px 10px rgba(255,255,255,0.6);
+  animation:livePulse 2s ease-in-out infinite;
+}
+.btn-live:hover{color:#fff;filter:brightness(1.08);}
+@keyframes livePulse{
+  0%,100%{box-shadow:0 0 20px rgba(2,74,216,0.50),0 0 40px rgba(2,74,216,0.18),4px 4px 10px rgba(2,74,216,0.4),-4px -4px 10px rgba(255,255,255,0.6);}
+  50%    {box-shadow:0 0 28px rgba(2,74,216,0.62),0 0 56px rgba(2,74,216,0.22),4px 4px 10px rgba(2,74,216,0.4),-4px -4px 10px rgba(255,255,255,0.6);}
+}
+
+/* BADGES */
+.ibadge{
+  display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:50px;
+  font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.04em;white-space:nowrap;
+  border:none;box-shadow:inset 2px 2px 4px var(--shadow-dark),inset -2px -2px 4px var(--shadow-light);
+}
+.ib-ok      {color:var(--green); background:rgba(22,163,74,0.08);}
+.ib-live    {color:var(--hp);    background:rgba(2,74,216,0.08);animation:livePulseBadge 2s ease-in-out infinite;}
+.ib-live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--hp);box-shadow:0 0 8px var(--hp);animation:dotPulse 1.4s ease-in-out infinite;}
+@keyframes livePulseBadge{0%,100%{opacity:1;}50%{opacity:0.85;}}
+.ib-partial {color:var(--yel);   background:rgba(217,119,6,0.08);}
+.ib-warn    {color:var(--yel);   background:rgba(217,119,6,0.08);}
+.ib-missing {color:var(--red);   background:rgba(220,38,38,0.08);}
+.ib-cli     {color:var(--col-slate);background:rgba(100,116,139,0.08);}
+@keyframes badgePulse{0%,100%{opacity:1;}50%{opacity:0.7;}}
+
+/* STATUS TICKER */
+.status-ticker{display:none;padding:8px 20px;font-family:var(--mono);font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-top:1px solid rgba(202,211,223,0.5);border-bottom-left-radius:16px;border-bottom-right-radius:16px;background:rgba(221,229,238,0.4);transition:opacity 0.2s ease;}
+.status-ticker.active{display:block;}
+.status-ticker.running{color:var(--hp);font-weight:600;}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(15,31,46,0.55);backdrop-filter:blur(4px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.modal-bg.open{opacity:1;pointer-events:all;}
+.modal{
+  background:var(--sur);border-radius:16px;width:100%;max-width:640px;max-height:88vh;overflow-y:auto;
+  border-top:1px solid rgba(255,255,255,0.6);border-left:1px solid rgba(255,255,255,0.3);
+  box-shadow:20px 20px 50px rgba(120,130,150,0.55),-10px -10px 30px rgba(255,255,255,0.85);
+  transform:translateY(12px);transition:transform 0.2s;
+}
+.modal-bg.open .modal{transform:translateY(0);}
+.modal-accent{display:none;}
+.modal-inner{padding:28px;}
+.modal-hdr{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;}
+.modal-ico{width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;background:var(--sur);box-shadow:inset 3px 3px 6px var(--shadow-dark),inset -3px -3px 6px var(--shadow-light);}
+.modal-title{font-size:17px;font-weight:700;color:var(--bright);line-height:1.3;letter-spacing:-0.005em;}
+.modal-kicker{font-size:10px;color:var(--dim);font-family:var(--mono);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:5px;}
+.sec-lbl{font-size:10px;font-weight:700;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;}
+.talk-track{background:var(--bg);border-radius:12px;padding:14px 18px;margin-bottom:20px;box-shadow:inset 3px 3px 6px var(--shadow-dark),inset -3px -3px 6px var(--shadow-light);}
+.talk-track p{font-size:12.5px;line-height:1.7;color:var(--txt);font-style:italic;}
+.kps{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+.kp{display:flex;gap:11px;padding:12px 14px;border-radius:10px;background:var(--bg);box-shadow:inset 3px 3px 6px var(--shadow-dark),inset -3px -3px 6px var(--shadow-light);}
+.kp-dot{width:6px;height:6px;border-radius:50%;margin-top:6px;flex-shrink:0;}
+.kp-text{font-size:12px;color:var(--dim);line-height:1.65;}
+.kp-text strong{color:var(--txt);font-weight:600;}
+.modal-foot{display:flex;gap:10px;flex-wrap:wrap;padding-top:18px;border-top:1px solid rgba(202,211,223,0.5);}
+
+/* READINESS */
+.r-wrap{padding:24px 22px;}
+.sys-bar{display:flex;background:var(--sur);border-radius:14px;margin-bottom:18px;overflow:hidden;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,0.6);border-left:1px solid rgba(255,255,255,0.3);box-shadow:10px 10px 22px rgba(150,160,175,0.55),-10px -10px 22px rgba(255,255,255,0.7);}
+.sys-cell{flex:1;padding:13px 16px;min-width:90px;border-right:1px solid rgba(202,211,223,0.4);}
+.sys-cell:last-child{border-right:none;}
+.sc-lbl{font-size:10px;color:var(--dim);font-family:var(--mono);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:3px;}
+.sc-val{font-size:12px;font-weight:600;color:var(--txt);}
+.sc-val.ok{color:var(--green);}
+
+.api-notice{display:none;margin-bottom:14px;padding:12px 18px;background:rgba(254,249,195,0.6);border-radius:12px;font-size:12px;color:#854d0e;line-height:1.6;box-shadow:inset 3px 3px 6px var(--shadow-dark),inset -3px -3px 6px var(--shadow-light);}
+.api-notice code{font-family:var(--mono);background:rgba(253,230,138,0.7);padding:1px 6px;border-radius:4px;}
+
+.install-list{display:flex;flex-direction:column;gap:12px;}
+.install-row{background:var(--sur);border-radius:14px;overflow:hidden;border-top:1px solid rgba(255,255,255,0.6);border-left:1px solid rgba(255,255,255,0.3);box-shadow:8px 8px 18px rgba(150,160,175,0.5),-8px -8px 18px rgba(255,255,255,0.7);}
+.ir-header{display:flex;align-items:center;gap:13px;padding:14px 18px;flex-wrap:wrap;}
+.ir-icon{flex-shrink:0;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--icon-color,var(--hp)) 8%,var(--sur));box-shadow:inset 3px 3px 6px var(--shadow-dark),inset -3px -3px 6px var(--shadow-light);}
+.ir-icon svg{width:22px;height:22px;stroke:var(--icon-color,var(--hp));stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+.ir-info{flex:1;min-width:160px;}
+.ir-name{font-size:13px;font-weight:600;color:var(--bright);}
+.ir-meta{font-size:10px;color:var(--dim);font-family:var(--mono);margin-top:2px;}
+.ir-actions{display:flex;gap:7px;align-items:center;flex-shrink:0;}
+.ir-reqs{padding:0 18px 14px 50px;display:flex;flex-direction:column;gap:3px;}
+.rline{display:flex;align-items:flex-start;gap:7px;font-size:11px;line-height:1.6;}
+.rline.met{color:var(--green);}.rline.unmet{color:var(--red);}.rline.partial{color:var(--yel);}.rline.note{color:var(--dim);}
+.ri{flex-shrink:0;width:14px;text-align:center;}
+
+.install-console{display:none;border-top:1px solid rgba(202,211,223,0.5);}
+.install-row.expanded .install-console{display:block;}
+.ic-toolbar{display:flex;align-items:center;gap:9px;padding:9px 18px;background:rgba(221,229,238,0.4);border-bottom:1px solid rgba(202,211,223,0.5);}
+.ic-title{font-size:10px;font-weight:700;color:var(--dim);letter-spacing:0.07em;text-transform:uppercase;flex:1;}
+.ic-close{background:var(--sur);border:none;cursor:pointer;color:var(--dim);font-size:13px;padding:4px 9px;border-radius:50px;box-shadow:3px 3px 6px var(--shadow-dark),-3px -3px 6px var(--shadow-light);}
+.ic-close:hover{color:var(--red);}
+.step-bar{display:flex;gap:5px;padding:9px 18px;background:rgba(221,229,238,0.4);border-bottom:1px solid rgba(202,211,223,0.5);}
+.step-pip{flex:1;height:5px;border-radius:4px;background:rgba(202,211,223,0.7);transition:background 0.3s;}
+.step-pip.active{background:var(--hp);animation:pulse-pip 1s ease-in-out infinite;}
+.step-pip.done{background:var(--green);}
+.step-pip.error{background:var(--red);}
+@keyframes pulse-pip{0%,100%{opacity:1;}50%{opacity:0.5;}}
+.step-label{padding:7px 18px 9px;font-size:11px;color:var(--dim);font-family:var(--mono);background:rgba(221,229,238,0.4);border-bottom:1px solid rgba(202,211,223,0.5);}
+.ic-output{font-family:var(--mono);font-size:11px;line-height:1.6;padding:14px 18px;background:#0f1f2e;color:#94d4f5;max-height:240px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;}
+
+.legend-row{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;padding:12px 18px;background:var(--sur);border-radius:12px;align-items:center;box-shadow:6px 6px 14px rgba(150,160,175,0.4),-6px -6px 14px rgba(255,255,255,0.7);}
+.li{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--dim);}
+.ld{width:8px;height:8px;border-radius:50%;}
+.ip-row{display:flex;align-items:center;gap:11px;margin-top:11px;padding:11px 18px;background:var(--sur);border-radius:12px;box-shadow:6px 6px 14px rgba(150,160,175,0.4),-6px -6px 14px rgba(255,255,255,0.7);}
+.ip-inp{font-family:var(--mono);font-size:12px;padding:6px 10px;border:none;border-radius:50px;color:var(--txt);background:var(--sur);width:150px;outline:none;box-shadow:inset 2px 2px 4px var(--shadow-dark),inset -2px -2px 4px var(--shadow-light);}
+
+.btn-start{color:#1d4ed8;}
+.btn-starting{color:var(--yel);cursor:default;pointer-events:none;background:var(--sur);box-shadow:inset 2px 2px 4px var(--shadow-dark),inset -2px -2px 4px var(--shadow-light);}
+.btn-running{color:var(--green);cursor:default;background:var(--sur);box-shadow:inset 2px 2px 4px var(--shadow-dark),inset -2px -2px 4px var(--shadow-light);}
+.btn-stop{color:#be123c;}
+.btn-stop:hover{color:#9f1239;}
+.launch-disabled{opacity:0.35;pointer-events:none !important;}
+.conflict-warn{font-size:10px;color:var(--yel);font-family:var(--mono);margin-top:3px;}
+
+@keyframes loadPulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+.btn-loading{color:var(--yel)!important;cursor:default!important;pointer-events:none!important;animation:loadPulse 1.5s ease-in-out infinite;background:var(--sur)!important;box-shadow:inset 2px 2px 4px var(--shadow-dark),inset -2px -2px 4px var(--shadow-light)!important;}
+.btn-open{background:var(--hp)!important;color:#fff!important;box-shadow:4px 4px 10px rgba(2,74,216,0.4),-4px -4px 10px rgba(255,255,255,0.6)!important;}
+
+/* ── Phase 3 demo shell (iframe wrap + Return-to-Demo-Center) ─────────────── */
+#demo-shell{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999;display:none;background:#0b1018;}
+#demo-shell-frame{width:100%;height:100%;border:0;display:block;background:#0b1018;}
+#demo-shell-hotzone{position:fixed;top:0;left:0;width:200px;height:4px;z-index:10000;background:transparent;}
+#demo-shell-panel{position:fixed;top:0;left:0;height:48px;min-width:320px;max-width:480px;z-index:10001;
+  transform:translateY(-100%);transition:transform 200ms ease-out;
+  background:rgba(20,20,20,0.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  border-bottom-right-radius:8px;padding:0 16px;display:flex;align-items:center;gap:12px;
+  color:#fff;font-family:inherit;box-shadow:0 4px 12px rgba(0,0,0,0.35);}
+#demo-shell-panel.open{transform:translateY(0);}
+#demo-shell-panel .ds-live{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#4ade80;font-weight:500;}
+#demo-shell-panel .ds-live .ds-dot{width:8px;height:8px;border-radius:50%;background:#4ade80;
+  box-shadow:0 0 6px rgba(74,222,128,0.7);animation:dsLivePulse 1.6s ease-in-out infinite;}
+@keyframes dsLivePulse{0%,100%{opacity:1;}50%{opacity:0.55;}}
+#demo-shell-panel #demo-shell-name{font-size:13px;color:#e6edf3;font-weight:500;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;max-width:240px;}
+#demo-shell-panel .ds-spacer{flex:1 1 auto;}
+#demo-shell-panel #demo-shell-return{background:#024AD8;color:#fff;border:0;border-radius:6px;
+  padding:6px 12px;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;
+  font-family:inherit;transition:background 120ms ease-out;}
+#demo-shell-panel #demo-shell-return:hover{background:#0356f0;}
+#demo-shell-panel #demo-shell-exit{margin-left:8px;background:transparent;color:#ff6b6b;
+  border:1px solid rgba(255,107,107,0.55);border-radius:6px;padding:6px 12px;font-size:13px;
+  font-weight:500;cursor:pointer;white-space:nowrap;font-family:inherit;transition:background 120ms ease-out;}
+#demo-shell-panel #demo-shell-exit:hover{background:rgba(255,107,107,0.12);}
+#demo-shell-dot{position:fixed;top:6px;left:6px;width:8px;height:8px;z-index:10000;
+  background:#024AD8;border-radius:50%;opacity:0.6;cursor:pointer;transition:opacity 150ms ease-out;
+  box-shadow:0 0 4px rgba(2,74,216,0.5);}
+#demo-shell-dot:hover{opacity:1;}
+</style>
+</head>
+<body>
+
+<!-- Phase 3 demo shell: iframe overlay + slide-down Return panel + anchor dot -->
+<div id="demo-shell" aria-hidden="true">
+  <iframe id="demo-shell-frame"
+          allow="microphone; camera; fullscreen; clipboard-read; clipboard-write"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="Active demo"></iframe>
+  <div id="demo-shell-hotzone" aria-hidden="true"></div>
+  <div id="demo-shell-panel" role="toolbar" aria-label="Demo shell controls">
+    <span class="ds-live"><span class="ds-dot"></span>Live</span>
+    <span id="demo-shell-name">—</span>
+    <span class="ds-spacer"></span>
+    <button id="demo-shell-return" type="button">← Return to Demo Center</button>
+    <button id="demo-shell-exit" type="button" onclick="exitDemoCenter()">⏻ Exit Demo Center</button>
+  </div>
+  <div id="demo-shell-dot" title="Show return panel" aria-label="Show return panel"></div>
+</div>
+
+<div id="benchWarningBanner" style="display:none;align-items:center;justify-content:space-between;background:#fef3c7;border-bottom:2px solid #f59e0b;padding:12px 24px;font-family:sans-serif;gap:16px;flex-wrap:wrap;">
+  <div style="flex:1;min-width:280px;">
+    <div style="font-weight:700;color:#92400e;font-size:15px;">⚠ ZGX Performance Lab is running</div>
+    <div style="color:#78350f;font-size:13px;margin-top:4px;">The benchmark app is using ~80GB of GPU memory. Most demos cannot load until it is stopped.</div>
+  </div>
+  <button id="btnStopBench" onclick="stopBenchApp()" style="background:#dc2626;color:white;border:none;padding:10px 20px;border-radius:6px;font-weight:600;cursor:pointer;white-space:nowrap;font-size:14px;">Stop Performance Lab &amp; Free Memory</button>
+  <button onclick="document.getElementById('benchWarningBanner').style.display='none'" style="background:none;border:1px solid #d97706;color:#92400e;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;white-space:nowrap;">Dismiss</button>
+</div>
+
+<header>
+  <div class="logo-wrap"><img class="logo" src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 fill=%22%23004bdf%22/%3E%3C/svg%3E" alt="HP"></div>
+  <div class="brand">ZGX Demo Center<span>HP ZGX Nano G1n</span></div>
+  <div class="hdr-right">
+    <span class="pill ok">● 8 Demos</span>
+    <span class="pill">HP ZGX Nano G1n AI Station</span>
+    <button id="resetAllBtn" class="btn-reset" onclick="resetAll()" title="Stop all running demos and reset">⟲ Reset All</button>
+    <button id="exitDemoCenterBtn" class="btn-reset" onclick="exitDemoCenter()" title="Full teardown — stop all demos, release models, return to the desktop">⏻ Exit</button>
+  </div>
+</header>
+
+<nav>
+  <button class="tab active" onclick="switchTab('demos',this)">Demo Library</button>
+  <button class="tab" onclick="switchTab('readiness',this)">Install Readiness</button>
+</nav>
+
+<!-- DEMO LIBRARY -->
+<div class="page active" id="page-demos">
+  <div class="filter-row">
+    <span class="filter-label">Filter</span>
+    <button class="fbtn active" data-filter="all">All</button>
+    <button class="fbtn" data-filter="healthcare">Healthcare</button>
+    <button class="fbtn" data-filter="government">Gov / Defense</button>
+    <button class="fbtn" data-filter="enterprise">Enterprise</button>
+    <button class="fbtn" data-filter="manufacturing">Manufacturing</button>
+    <button class="fbtn" data-filter="nlp">Language</button>
+  </div>
+  <div id="demoStatusBar" style="display:none;padding:8px 20px;background:#f0fdf4;border-bottom:1px solid #bbf7d0;font-size:12px;color:#166534;font-family:var(--mono);align-items:center;gap:8px;"><span style="color:#16a34a;">●</span><span id="demoStatusText"></span></div>
+  <div class="grid-wrap"><div class="demo-grid" id="demoGrid">
+    <div class="card" style="--card-color:#0891b2;--icon-color:var(--ind-energy)" data-industry="enterprise" data-demo="0"><div class="card-top"></div><div class="card-body"><div class="card-hdr"><div class="card-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div class="card-tg"><div class="card-title">Pipeline Pulse — O&amp;G AI Monitoring</div><div class="card-industry">Energy · Edge AI</div></div><span class="ibadge ib-missing" id="cbadge-pipeline">Needs Setup</span></div><div class="card-desc">Live oil rig monitoring dashboard with LLM-powered anomaly analysis running entirely on-device. Real GPU telemetry, simulated sensor data, zero cloud dependency.</div><div class="card-tags"><span class="tag" data-color="green">Ollama</span><span class="tag" data-color="blue">Edge AI</span><span class="tag" data-color="indigo">Real GPU Telemetry</span><span class="tag" data-color="teal">Air-Gapped</span></div></div><div class="card-foot"><div class="card-meta"><strong>Port 8088</strong>~42GB · llama3.1:70b<div style="color:var(--dim);font-size:10px;margin-top:2px;">⏱ ~30–60 sec to load</div></div><div class="card-btns"><button class="btn btn-outline" onclick="openModal(0)">Details</button><button class="btn btn-primary" id="card-btn-pipeline" onclick="loadAndOpen('pipeline')">▶ Load Demo</button></div></div><div class="status-ticker" id="status-ticker-pipeline"></div></div>
+    <div class="card" style="--card-color:#1e88e5;--icon-color:var(--ind-vision)" data-industry="enterprise" data-demo="1"><div class="card-top"></div><div class="card-body"><div class="card-hdr"><div class="card-icon"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="card-tg"><div class="card-title">AI Vision — Real-Time Object Detection</div><div class="card-industry">Computer Vision · Edge AI</div></div><span class="ibadge ib-missing" id="cbadge-vision">Needs Setup</span></div><div class="card-desc">Real-time multi-camera object detection with scenario-based monitoring. 4 industry scenarios, YOLOv8s TRT FP16 on GB10 Blackwell, LLM-powered alert generation, zero cloud dependency.</div><div class="card-tags"><span class="tag" data-color="blue">TensorRT</span><span class="tag" data-color="indigo">YOLOv8s</span><span class="tag" data-color="violet">FP16</span><span class="tag" data-color="cyan">Multi-Stream</span><span class="tag" data-color="amber">LLM Alerts</span></div></div><div class="card-foot"><div class="card-meta"><strong>Port 8094</strong>~44GB · TRT + llama3.1:70b<div style="color:var(--dim);font-size:10px;margin-top:2px;">⏱ ~10–15 sec to load</div></div><div class="card-btns"><button class="btn btn-outline" onclick="openModal(1)">Details</button><button class="btn btn-primary" id="card-btn-vision" onclick="loadAndOpen('vision')">▶ Load Demo</button></div></div><div class="status-ticker" id="status-ticker-vision"></div></div>
+    <div class="card" style="--card-color:#1d6fa4;--icon-color:var(--ind-defense)" data-industry="government" data-demo="2"><div class="card-top"></div><div class="card-body"><div class="card-hdr"><div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/></svg></div><div class="card-tg"><div class="card-title">Maritime Surveillance Intelligence</div><div class="card-industry">Defense / Navy</div></div><span class="ibadge ib-partial" id="cbadge-maritime">Download Model</span></div><div class="card-desc">Upload vessel imagery → intel report: vessel class, threat level, synthetic geolocation. Qwen3-VL 8B FP8 via vLLM. Air-gap capable.</div><div class="card-tags"><span class="tag" data-color="cyan">Qwen3-VL 8B FP8</span><span class="tag" data-color="blue">vLLM</span><span class="tag">Vision LM</span><span class="tag" data-color="slate">Docker</span><span class="tag" data-color="teal">Air-Gap</span></div></div><div class="card-foot"><div class="card-meta"><strong>Port 8000</strong>~9GB VRAM · vLLM image ✓<div style="color:var(--dim);font-size:10px;margin-top:2px;">⏱ ~3–5 min to load</div></div><div class="card-btns"><button class="btn btn-outline" onclick="openModal(2)">Details</button><button class="btn btn-primary" id="card-btn-maritime" onclick="loadAndOpen('maritime')">▶ Load Demo</button></div></div><div class="status-ticker" id="status-ticker-maritime"></div></div>
+    <div class="card" style="--card-color:#0d7e6e;--icon-color:var(--ind-healthcare)" data-industry="healthcare" data-demo="3"><div class="card-top"></div><div class="card-body"><div class="card-hdr"><div class="card-icon"><svg viewBox="0 0 24 24"><path d="M10.5 1.5H8A6.5 6.5 0 0 0 1.5 8v0A6.5 6.5 0 0 0 8 14.5h2.5"/><path d="M13.5 22.5H16A6.5 6.5 0 0 0 22.5 16v0A6.5 6.5 0 0 0 16 9.5h-2.5"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div><div class="card-tg"><div class="card-title">Clinical Drug Interaction Analysis</div><div class="card-industry">Healthcare · Clinical Decision Support</div></div><span class="ibadge ib-missing" id="cbadge-pharmacy">Needs Setup</span></div><div class="card-desc">Mixtral-8x7B (47B params) via Ollama with RAG-augmented clinical DDI database. Simple or complex polypharmacy analysis with severity classification and action items.</div><div class="card-tags"><span class="tag">Mixtral 8x7B Q4</span><span class="tag" data-color="amber">RAG-Augmented</span><span class="tag" data-color="green">Ollama</span><span class="tag" data-color="slate">Docker</span><span class="tag" data-color="red">HIPAA</span></div></div><div class="card-foot"><div class="card-meta"><strong>Port 8000</strong>~28GB model<div style="color:var(--dim);font-size:10px;margin-top:2px;">⏱ ~5–8 min to load</div></div><div class="card-btns"><button class="btn btn-outline" onclick="openModal(3)">Details</button><button class="btn btn-primary" id="card-btn-pharmacy" onclick="loadAndOpen('pharmacy')">▶ Load Demo</button></div></div><div class="status-ticker" id="status-ticker-pharmacy"></div></div>
+    <div class="card" style="--card-color:#6d3eb0;--icon-color:var(--ind-security)" data-industry="enterprise" data-demo="4"><div class="card-top"></div><div class="card-body"><div class="card-hdr"><div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><rect x="9" y="10" width="6" height="5" rx="1"/><path d="M10 10V8a2 2 0 1 1 4 0v2"/></svg></div><div class="card-tg"><div class="card-title">PII Detection &amp; Masking</div><div class="card-industry">Enterprise · Compliance</div></div><span class="ibadge ib-missing" id="cbadge-pii">Needs Setup</span></div><div class="card-desc">Side-by-side: base TinyLlama vs. fine-tuned Qwen2.5-32B. Live 6× accuracy improvement — makes fine-tuning tangible.</div><div class="card-tags"><span class="tag" data-color="cyan">Qwen2.5-32B</span><span class="tag">TinyLlama</span><span class="tag" data-color="orange">Fine-Tuning Demo</span><span class="tag" data-color="slate">Docker</span><span class="tag" data-color="red">GDPR / HIPAA</span></div></div><div class="card-foot"><div class="card-meta"><strong>Port 8000 → /app/</strong>~19GB models<div style="color:var(--dim);font-size:10px;margin-top:2px;">⏱ ~4–6 min to load</div></div><div class="card-btns"><button class="btn btn-outline" onclick="openModal(4)">Details</button><button class="btn btn-primary" id="card-btn-pii" onclick="loadAndOpen('pii')">▶ Load Demo</button></div></div><div class="status-ticker" id="status-ticker-pii"></div></div>
+    <div class="card" style="--card-color:#c2520e;--icon-color:var(--ind-construction)" data-industry="manufacturing" data-demo="5"><div class="card-top"></div><div class="card-body"><div class="card-hdr"><div class="card-icon"><svg viewBox="0 0 24 24"><path d="M2 18v1a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-1"/><path d="M2 18h20"/><path d="M4 18v-4a8 8 0 0 1 16 0v4"/><line x1="12" y1="6" x2="12" y2="2"/></svg></div><div class="card-tg"><div class="card-title">Construction Safety Assistant</div><div class="card-industry">AEC / Construction</div></div><span class="ibadge ib-missing" id="cbadge-construction">Needs Setup</span></div><div class="card-desc">OSHA Q&amp;A — PPE, fall protection, confined spaces, LOTO. Offline fallback mode, no connectivity needed.</div><div class="card-tags"><span class="tag" data-color="indigo">TTS</span><span class="tag" data-color="teal">Offline Mode</span><span class="tag" data-color="slate">Python venv</span><span class="tag" data-color="orange">OSHA</span></div></div><div class="card-foot"><div class="card-meta"><strong>Port 8091</strong>~3GB model<div style="color:var(--dim);font-size:10px;margin-top:2px;">⏱ ~30–60 sec to load</div></div><div class="card-btns"><button class="btn btn-outline" onclick="openModal(5)">Details</button><button class="btn btn-primary" id="card-btn-construction" onclick="loadAndOpen('construction')">▶ Load Demo</button></div></div><div class="status-ticker" id="status-ticker-construction"></div></div>
+    <div class="card" style="--card-color:#b07d10;--icon-color:var(--ind-language)" data-industry="nlp" data-demo="6"><div class="card-top"></div><div class="card-body"><div class="card-hdr"><div class="card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div class="card-tg"><div class="card-title">Private Document Translation</div><div class="card-industry">Language / NLP</div></div><span class="ibadge ib-missing" id="cbadge-translation">Needs Setup</span></div><div class="card-desc">54 language pairs via Meta NLLB-200. Fully local — documents translated with zero data egress.</div><div class="card-tags"><span class="tag" data-color="blue">NLLB-200</span><span class="tag" data-color="teal">54 Language Pairs</span><span class="tag" data-color="slate">Python venv</span><span class="tag" data-color="violet">Private</span></div></div><div class="card-foot"><div class="card-meta"><strong>Port 8092</strong>~1.2GB model<div style="color:var(--dim);font-size:10px;margin-top:2px;">⏱ ~60–90 sec to load</div></div><div class="card-btns"><button class="btn btn-outline" onclick="openModal(6)">Details</button><button class="btn btn-primary" id="card-btn-translation" onclick="loadAndOpen('translation')">▶ Load Demo</button></div></div><div class="status-ticker" id="status-ticker-translation"></div></div>
+    <div class="card" style="--card-color:#0096d6;--icon-color:var(--ind-robotics)" data-industry="healthcare" data-demo="7"><div class="card-top"></div><div class="card-body"><div class="card-hdr"><div class="card-icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></div><div class="card-tg"><div class="card-title">Robotic Medical Triage Agent</div><div class="card-industry">Healthcare · Robotics</div></div><span class="ibadge ib-missing" id="cbadge-medical">Needs Setup</span></div><div class="card-desc">Fully local voice triage agent running on HP ZGX Nano + Reachy Mini robot. Patient speaks to the robot — Whisper STT (GPU, &lt;0.2s), Llama 3.1 8B AWQ via vLLM, Piper TTS — total response under 2s. Live transcript dashboard with medical record export. HIPAA-ready, air-gapped capable.</div><div class="card-tags"><span class="tag" data-color="cyan">Whisper STT</span><span class="tag">Llama 3.1 8B AWQ</span><span class="tag" data-color="blue">vLLM</span><span class="tag" data-color="indigo">Piper TTS</span><span class="tag" data-color="slate">Docker</span><span class="tag" data-color="red">HIPAA-Ready</span><span class="tag" data-color="orange">Reachy Mini Required</span></div></div><div class="card-foot"><div class="card-meta"><strong>Port 8090</strong>~6GB VRAM · vLLM<div style="color:var(--dim);font-size:10px;margin-top:2px;">⏱ ~2 min to load</div><div id="robot-warn-medical" style="color:#d97706;font-size:10px;font-weight:600;">⚠ Requires Reachy Mini robot</div></div><div class="card-btns"><button class="btn btn-outline" onclick="openModal(7)">Details</button><button class="btn" id="card-btn-medical" style="background:var(--sur);color:var(--dim);box-shadow:inset 2px 2px 4px var(--shadow-dark),inset -2px -2px 4px var(--shadow-light);cursor:not-allowed;pointer-events:none;" disabled>Requires Reachy Mini</button></div></div><div class="status-ticker" id="status-ticker-medical"></div></div>
+  
+  </div></div>
+</div>
+
+<!-- INSTALL READINESS -->
+<div class="page" id="page-readiness">
+<div class="r-wrap">
+
+  <div class="sys-bar">
+    <div class="sys-cell"><div class="sc-lbl">Docker Engine</div><div class="sc-val ok">✓ v29.1.3</div></div>
+    <div class="sys-cell"><div class="sc-lbl">Docker Compose</div><div class="sc-val ok">✓ v5.0.1</div></div>
+    <div class="sys-cell"><div class="sc-lbl">NVIDIA CTK</div><div class="sc-val ok">✓ v1.18.2</div></div>
+    <div class="sys-cell"><div class="sc-lbl">GPU / Compute</div><div class="sc-val ok">GB10 · sm_121</div></div>
+    <div class="sys-cell"><div class="sc-lbl">Unified Memory</div><div class="sc-val ok">128GB</div></div>
+    <div class="sys-cell"><div class="sc-lbl">Disk Free</div><div class="sc-val ok">3.3TB / 3.6TB</div></div>
+    <div class="sys-cell"><div class="sc-lbl">vLLM Container</div><div class="sc-val ok">✓ 26.01-py3</div></div>
+    <div class="sys-cell"><div class="sc-lbl">TRT Container</div><div class="sc-val ok">✓ 25.05-py3</div></div>
+  </div>
+
+  <div class="api-notice" id="apiNotice">
+    ⚠ Install server not running on port 8086 — Install buttons are disabled.<br>
+    Start it with: <code>bash ~/run_demos.sh</code> &nbsp;(it starts both the file server and install API together)
+  </div>
+
+<div id="installAllBanner" style="display:none;margin-bottom:12px;padding:12px 16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:4px;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+  <div>
+    <div style="font-size:13px;font-weight:600;color:#166534;">Install All Web UI Demos</div>
+    <div style="font-size:11px;color:#15803d;margin-top:3px;">Clones all 6 repos, downloads models, and builds Docker images in sequence. Takes 30-90 min. Individual install buttons below still work independently.</div>
+  </div>
+  <div style="display:flex;gap:8px;flex-shrink:0;">
+    <button id="btnRefreshReadiness" class="btn btn-outline" style="font-size:11px;padding:7px 18px;white-space:nowrap;flex-shrink:0;" onclick="refreshReadiness()" title="Re-check per-demo install status">↻ Refresh</button>
+    <button id="btnInstallAll" class="btn btn-install" style="font-size:11px;padding:7px 18px;white-space:nowrap;flex-shrink:0;" onclick="installAll()">Install All Demos</button>
+  </div>
+</div>
+
+  <div class="install-list">
+
+    <!-- PIPELINE PULSE -->
+    <div class="install-row" id="row-pipeline">
+      <div class="ir-header">
+        <div class="ir-icon" style="--icon-color:var(--ind-energy)"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div class="ir-info"><div class="ir-name">Pipeline Pulse — O&amp;G AI Monitoring</div><div class="ir-meta">Energy / Edge AI · Port 8088 · ~42GB · Native (no Docker) · llama3.1:70b via Ollama</div></div>
+        <span class="tag" style="--card-color:#d97706">Native</span>
+        <span class="ibadge ib-missing" id="status-pipeline">Needs Setup</span>
+        <div class="ir-actions">
+          <button class="btn btn-install" id="btn-pipeline" onclick="startInstall('pipeline')">⬇ Install</button>
+        </div>
+      </div>
+      <div class="ir-reqs">
+        <div class="rline met" data-stable="true"><span class="ri">✓</span> Python 3.12 in conda <code>zgx</code> env · No Docker required</div>
+        <div class="rline unmet" id="rline-pipeline-ollama"><span class="ri">✗</span> Ollama running on localhost:11434</div>
+        <div class="rline unmet" id="rline-pipeline-model"><span class="ri">✗</span> llama3.1:70b model (~42GB) — run: <code>ollama pull llama3.1:70b</code></div>
+        <div class="rline unmet" id="rline-pipeline-files"><span class="ri">✗</span> ~/pipeline_pulse_v6.py + ~/pipeline_pulse_v6.html present</div>
+      </div>
+      <div class="install-console" id="console-pipeline">
+        <div class="ic-toolbar"><span class="ic-title" id="ict-pipeline">Installing…</span><button class="ic-close" onclick="closeConsole('pipeline')">✕</button></div>
+        <div class="step-bar" id="steps-pipeline"></div>
+        <div class="step-label" id="steplbl-pipeline">Preparing…</div>
+        <div class="ic-output" id="out-pipeline"></div>
+      </div>
+    </div>
+
+    <!-- AI VISION -->
+    <div class="install-row" id="row-vision">
+      <div class="ir-header">
+        <div class="ir-icon" style="--icon-color:var(--ind-vision)"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+        <div class="ir-info"><div class="ir-name">AI Vision — Real-Time Object Detection</div><div class="ir-meta">Computer Vision / Edge AI · Port 8094 · ~44GB · Native (no Docker) · YOLOv8s TRT FP16 + llama3.1:70b</div></div>
+        <span class="tag" style="--card-color:#6366f1">Native</span>
+        <span class="ibadge ib-missing" id="status-vision">Needs Setup</span>
+        <div class="ir-actions">
+          <button class="btn btn-install" id="btn-vision" onclick="startInstall('vision')">⬇ Install</button>
+        </div>
+      </div>
+      <div class="ir-reqs">
+        <div class="rline met" data-stable="true"><span class="ri">✓</span> Python 3.12 in conda <code>zgx</code> env · No Docker required</div>
+        <div class="rline unmet" id="rline-vision-trt"><span class="ri">✗</span> TensorRT engine ~/yolov8s.trt (~22MB FP16)</div>
+        <div class="rline unmet" id="rline-vision-ollama"><span class="ri">✗</span> Ollama running on localhost:11434</div>
+        <div class="rline unmet" id="rline-vision-model"><span class="ri">✗</span> llama3.1:70b model (~42GB) for alert engine</div>
+        <div class="rline unmet" id="rline-vision-video"><span class="ri">✗</span> Sample video ~/zgx_videos/video1.mp4</div>
+        <div class="rline unmet" id="rline-vision-app"><span class="ri">✗</span> App file ~/demos/ai-vision/vision_demo.py</div>
+      </div>
+      <div class="install-console" id="console-vision">
+        <div class="ic-toolbar"><span class="ic-title" id="ict-vision">Installing…</span><button class="ic-close" onclick="closeConsole('vision')">✕</button></div>
+        <div class="step-bar" id="steps-vision"></div>
+        <div class="step-label" id="steplbl-vision">Preparing…</div>
+        <div class="ic-output" id="out-vision"></div>
+      </div>
+    </div>
+
+    <!-- MARITIME -->
+    <div class="install-row" id="row-maritime">
+      <div class="ir-header">
+        <div class="ir-icon" style="--icon-color:var(--ind-defense)"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/></svg></div>
+        <div class="ir-info"><div class="ir-name">Maritime Surveillance Intelligence</div><div class="ir-meta">Defense / Navy · Port 8000 · ~9GB · Fastest to ready (vLLM image already pulled)</div></div>
+        <span class="tag" style="--card-color:#1d6fa4">Docker</span>
+        <span class="ibadge ib-partial" id="status-maritime">Download Model</span>
+        <div class="ir-actions">
+          <button class="btn btn-install" id="btn-maritime" onclick="startInstall('maritime')">⬇ Install</button>
+          
+        </div>
+      </div>
+      <div class="ir-reqs">
+        <div class="rline met" data-stable="true"><span class="ri">✓</span> Docker v29.1.3 · NVIDIA CTK v1.18.2 · 128GB VRAM ✓</div>
+        <div class="rline met" data-stable="true"><span class="ri">✓</span> nvcr.io/nvidia/vllm:26.01-py3 already pulled (10.8GB) — no image build needed</div>
+        <div class="rline unmet"><span class="ri">✗</span> Qwen3-VL-8B-Instruct-FP8 (~9GB) — run ./download_models.sh</div>
+      </div>
+      <div class="install-console" id="console-maritime">
+        <div class="ic-toolbar"><span class="ic-title" id="ict-maritime">Installing…</span><button class="ic-close" onclick="closeConsole('maritime')">✕</button></div>
+        <div class="step-bar" id="steps-maritime"></div>
+        <div class="step-label" id="steplbl-maritime">Preparing…</div>
+        <div class="ic-output" id="out-maritime"></div>
+      </div>
+    </div>
+
+    <!-- DRUG INTERACTION -->
+    <div class="install-row" id="row-pharmacy">
+      <div class="ir-header">
+        <div class="ir-icon" style="--icon-color:var(--ind-healthcare)"><svg viewBox="0 0 24 24"><path d="M10.5 1.5H8A6.5 6.5 0 0 0 1.5 8v0A6.5 6.5 0 0 0 8 14.5h2.5"/><path d="M13.5 22.5H16A6.5 6.5 0 0 0 22.5 16v0A6.5 6.5 0 0 0 16 9.5h-2.5"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+        <div class="ir-info"><div class="ir-name">Clinical Drug Interaction Analysis</div><div class="ir-meta">Healthcare · Port 8000 · ~35GB · Largest model download</div></div>
+        <span class="tag" style="--card-color:#0d7e6e">Docker</span>
+        <span class="ibadge ib-missing" id="status-pharmacy">Needs Setup</span>
+        <div class="ir-actions">
+          <button class="btn btn-install" id="btn-pharmacy" onclick="startInstall('pharmacy')">⬇ Install</button>
+          
+        </div>
+      </div>
+      <div class="ir-reqs">
+        <div class="rline met" data-stable="true"><span class="ri">✓</span> Docker v29.1.3 · NVIDIA CTK v1.18.2 · 128GB VRAM ✓</div>
+        <div class="rline unmet"><span class="ri">✗</span> medical-ft-mixtral-q4 (~28GB) — run ./download_models.sh</div>
+        <div class="rline partial"><span class="ri">~</span> Docker build ~15 min first time (compiles llama.cpp CUDA for sm_120)</div>
+      </div>
+      <div class="install-console" id="console-pharmacy">
+        <div class="ic-toolbar"><span class="ic-title" id="ict-pharmacy">Installing…</span><button class="ic-close" onclick="closeConsole('pharmacy')">✕</button></div>
+        <div class="step-bar" id="steps-pharmacy"></div>
+        <div class="step-label" id="steplbl-pharmacy">Preparing…</div>
+        <div class="ic-output" id="out-pharmacy"></div>
+      </div>
+    </div>
+
+    <!-- PII MASKING -->
+    <div class="install-row" id="row-pii">
+      <div class="ir-header">
+        <div class="ir-icon" style="--icon-color:var(--ind-security)"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><rect x="9" y="10" width="6" height="5" rx="1"/><path d="M10 10V8a2 2 0 1 1 4 0v2"/></svg></div>
+        <div class="ir-info"><div class="ir-name">PII Detection &amp; Masking</div><div class="ir-meta">Enterprise · Port 8000 /app/ · ~22GB</div></div>
+        <span class="tag" style="--card-color:#6d3eb0">Docker</span>
+        <span class="ibadge ib-missing" id="status-pii">Needs Setup</span>
+        <div class="ir-actions">
+          <button class="btn btn-install" id="btn-pii" onclick="startInstall('pii')">⬇ Install</button>
+          
+        </div>
+      </div>
+      <div class="ir-reqs">
+        <div class="rline met" data-stable="true"><span class="ri">✓</span> Docker v29.1.3 · NVIDIA CTK v1.18.2 · 128GB VRAM ✓</div>
+        <div class="rline unmet"><span class="ri">✗</span> TinyLlama + Qwen2.5-32B PII detector (~19GB) — run ./download_models.sh</div>
+        <div class="rline partial"><span class="ri">~</span> Dockerfile needs sm_120 CMAKE flag — handled automatically by installer</div>
+      </div>
+      <div class="install-console" id="console-pii">
+        <div class="ic-toolbar"><span class="ic-title" id="ict-pii">Installing…</span><button class="ic-close" onclick="closeConsole('pii')">✕</button></div>
+        <div class="step-bar" id="steps-pii"></div>
+        <div class="step-label" id="steplbl-pii">Preparing…</div>
+        <div class="ic-output" id="out-pii"></div>
+      </div>
+    </div>
+
+    <!-- ROBOTIC MEDICAL -->
+    <div class="install-row" id="row-medical">
+      <div class="ir-header">
+        <div class="ir-icon" style="--icon-color:var(--ind-robotics)"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></div>
+        <div class="ir-info"><div class="ir-name">Robotic Medical Triage Voice Agent</div><div class="ir-meta">Healthcare · Port 8090 · ~15GB · Requires Reachy Mini robot hardware</div></div>
+        <span class="tag" style="--card-color:#0096d6">Docker + Robot</span>
+        <span class="ibadge ib-missing" id="status-medical">Needs Setup</span>
+        <div class="ir-actions">
+          <button class="btn btn-install" id="btn-medical" onclick="startInstall('medical')">⬇ Install</button>
+          
+        </div>
+      </div>
+      <div class="ir-reqs">
+        <div class="rline met" data-stable="true"><span class="ri">✓</span> Docker v29.1.3 · NVIDIA CTK v1.18.2 · GB10 sm_121 ✓</div>
+        <div class="rline unmet"><span class="ri">✗</span> Pollen Reachy Mini robot (separate hardware — must be on same network)</div>
+        <div class="rline unmet"><span class="ri">✗</span> Llama-3.1-8B-AWQ-INT4 (~4GB) — not downloaded</div>
+        <div class="rline unmet"><span class="ri">✗</span> Docker image build ~10 min (compiles whisper.cpp CUDA)</div>
+      </div>
+      <div class="install-console" id="console-medical">
+        <div class="ic-toolbar"><span class="ic-title" id="ict-medical">Installing…</span><button class="ic-close" onclick="closeConsole('medical')">✕</button></div>
+        <div class="step-bar" id="steps-medical"></div>
+        <div class="step-label" id="steplbl-medical">Preparing…</div>
+        <div class="ic-output" id="out-medical"></div>
+      </div>
+    </div>
+
+    <!-- CONSTRUCTION SAFETY -->
+    <div class="install-row" id="row-construction">
+      <div class="ir-header">
+        <div class="ir-icon" style="--icon-color:var(--ind-construction)"><svg viewBox="0 0 24 24"><path d="M2 18v1a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-1"/><path d="M2 18h20"/><path d="M4 18v-4a8 8 0 0 1 16 0v4"/><line x1="12" y1="6" x2="12" y2="2"/></svg></div>
+        <div class="ir-info"><div class="ir-name">Construction Safety Assistant</div><div class="ir-meta">AEC · Port 8091 · ~4GB · Lightest install — offline fallback works immediately</div></div>
+        <span class="tag" style="--card-color:#c2520e">Python venv</span>
+        <span class="ibadge ib-missing" id="status-construction">Needs Setup</span>
+        <div class="ir-actions">
+          <button class="btn btn-install" id="btn-construction" onclick="startInstall('construction')">⬇ Install</button>
+          
+        </div>
+      </div>
+      <div class="ir-reqs">
+        <div class="rline met" data-stable="true"><span class="ri">✓</span> Python 3 available · No GPU required for offline mode</div>
+        <div class="rline unmet"><span class="ri">✗</span> Python venv not created — run ./install.sh</div>
+        <div class="rline note"><span class="ri">ℹ</span> Offline fallback works immediately with no model at all</div>
+      </div>
+      <div class="install-console" id="console-construction">
+        <div class="ic-toolbar"><span class="ic-title" id="ict-construction">Installing…</span><button class="ic-close" onclick="closeConsole('construction')">✕</button></div>
+        <div class="step-bar" id="steps-construction"></div>
+        <div class="step-label" id="steplbl-construction">Preparing…</div>
+        <div class="ic-output" id="out-construction"></div>
+      </div>
+    </div>
+
+    <!-- DOCUMENT TRANSLATION -->
+    <div class="install-row" id="row-translation">
+      <div class="ir-header">
+        <div class="ir-icon" style="--icon-color:var(--ind-language)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        <div class="ir-info"><div class="ir-name">Private Document Translation</div><div class="ir-meta">Language / NLP · Port 8092 · ~2GB · Fastest install — model downloads on first use</div></div>
+        <span class="tag" style="--card-color:#b07d10">Python venv</span>
+        <span class="ibadge ib-missing" id="status-translation">Needs Setup</span>
+        <div class="ir-actions">
+          <button class="btn btn-install" id="btn-translation" onclick="startInstall('translation')">⬇ Install</button>
+          
+        </div>
+      </div>
+      <div class="ir-reqs">
+        <div class="rline met" data-stable="true"><span class="ri">✓</span> Python 3 available · 8GB+ VRAM ✓</div>
+        <div class="rline unmet"><span class="ri">✗</span> Python venv not created</div>
+        <div class="rline note"><span class="ri">ℹ</span> Model (~1.2GB) downloads automatically on first "Load Models" click in the UI</div>
+      </div>
+      <div class="install-console" id="console-translation">
+        <div class="ic-toolbar"><span class="ic-title" id="ict-translation">Installing…</span><button class="ic-close" onclick="closeConsole('translation')">✕</button></div>
+        <div class="step-bar" id="steps-translation"></div>
+        <div class="step-label" id="steplbl-translation">Preparing…</div>
+        <div class="ic-output" id="out-translation"></div>
+      </div>
+    </div>
+
+  </div><!-- /install-list -->
+
+  <div class="legend-row">
+    <div class="li"><div class="ld" style="background:var(--green)"></div>Met today</div>
+    <div class="li"><div class="ld" style="background:var(--yel)"></div>Minor step needed</div>
+    <div class="li"><div class="ld" style="background:var(--red)"></div>Install required</div>
+    <div class="li"><div class="ld" style="background:#94a3b8"></div>Info / note</div>
+    <div class="li" style="margin-left:auto;font-size:11px;color:var(--dim)">Disk free: <strong style="color:var(--green)">3.3TB</strong> — sufficient for all demos (~97GB total)</div>
+  </div>
+
+</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg" onclick="closeMBg(event)">
+  <div class="modal">
+    <div class="modal-accent" id="modalAccent"></div>
+    <div class="modal-inner">
+      <button onclick="closeModal()" style="float:right;background:var(--sur2);border:1px solid var(--bdr);border-radius:3px;padding:4px 10px;cursor:pointer;font-size:11px;color:var(--dim);">✕ Close</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="gpuConflictBg">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-accent" style="background:#dc2626;"></div>
+    <div class="modal-inner">
+      <div class="modal-hdr"><div class="modal-ico" style="background:#fee2e2;font-size:22px;">⚠</div><div><div class="modal-kicker">System Resource Conflict</div><div class="modal-title">GPU Memory Conflict</div></div></div>
+      <p style="font-size:13px;color:var(--dim);line-height:1.7;margin:0 0 18px 0;">The ZGX Performance Lab is currently running on port 8080 and shares the 128GB unified GPU memory pool. Running both simultaneously will cause inference failures.</p>
+      <div class="modal-foot">
+        <button class="btn" id="gpu-conflict-stop" style="background:#dc2626;color:#fff;border:none;">Stop Performance Lab &amp; Continue</button>
+        <button class="btn btn-outline" id="gpu-conflict-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = `http://${window.location.hostname}:8086`;
+const nanoIP = window.location.hostname;
+const DEMO_IDS = ['maritime','pharmacy','pii','medical','construction','translation','pipeline','vision'];
+const STEP_COUNTS = {maritime:3,pharmacy:3,pii:3,medical:3,construction:2,translation:3,pipeline:0,vision:0};
+
+// ── Phase 3 demo shell ────────────────────────────────────────────────────
+// Wraps each launched demo in an iframe overlay with a hot-zone Return panel
+// instead of opening a new tab. Return always stops the demo (one-at-a-time).
+window._demoShellActiveId = null;
+(function setupDemoShell() {
+  const shell    = document.getElementById('demo-shell');
+  const frame    = document.getElementById('demo-shell-frame');
+  const hotzone  = document.getElementById('demo-shell-hotzone');
+  const panel    = document.getElementById('demo-shell-panel');
+  const dot      = document.getElementById('demo-shell-dot');
+  const returnBtn= document.getElementById('demo-shell-return');
+  if (!shell || !frame || !panel) return;
+
+  let dismissTimer = null;
+  let hintTimer1 = null, hintTimer2 = null;
+
+  function openPanel() {
+    if (dismissTimer) { clearTimeout(dismissTimer); dismissTimer = null; }
+    panel.classList.add('open');
+  }
+  function scheduleClosePanel() {
+    if (dismissTimer) clearTimeout(dismissTimer);
+    dismissTimer = setTimeout(() => { panel.classList.remove('open'); dismissTimer = null; }, 500);
+  }
+  function cancelClosePanel() {
+    if (dismissTimer) { clearTimeout(dismissTimer); dismissTimer = null; }
+  }
+
+  hotzone.addEventListener('mouseenter', openPanel);
+  panel.addEventListener('mouseenter', cancelClosePanel);
+  panel.addEventListener('mouseleave', scheduleClosePanel);
+  dot.addEventListener('click', openPanel);
+
+  returnBtn.addEventListener('click', () => { window.closeDemoShell(); });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && shell.style.display === 'block') {
+      e.stopPropagation();
+      window.closeDemoShell();
+    }
+  }, true);  // capture phase, so we run before the modal handler at line ~1542
+
+  // Esc relay from iframed demos: each demo's HTML posts {type:'demo-shell-return'}
+  // when Esc is pressed inside the demo. Closed-system origin trust on the Nano.
+  window.addEventListener('message', (e) => {
+    if (e.data && e.data.type === 'demo-shell-return') {
+      if (window._demoShellActiveId) window.closeDemoShell();
+    }
+  });
+
+  window.openDemoShell = function (id, url, name) {
+    window._demoShellActiveId = id;
+    document.getElementById('demo-shell-name').textContent = name || id;
+    panel.classList.remove('open');
+    if (hintTimer1) clearTimeout(hintTimer1);
+    if (hintTimer2) clearTimeout(hintTimer2);
+    frame.src = url;
+    shell.style.display = 'block';
+    shell.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    // First-time hint: open panel 800ms after src set, close after 2000ms.
+    hintTimer1 = setTimeout(() => {
+      panel.classList.add('open');
+      hintTimer2 = setTimeout(() => {
+        if (!dismissTimer) panel.classList.remove('open');
+      }, 2000);
+    }, 800);
+  };
+
+  window.closeDemoShell = function () {
+    const id = window._demoShellActiveId;
+    if (hintTimer1) clearTimeout(hintTimer1);
+    if (hintTimer2) clearTimeout(hintTimer2);
+    if (dismissTimer) { clearTimeout(dismissTimer); dismissTimer = null; }
+    panel.classList.remove('open');
+    frame.src = 'about:blank';
+    shell.style.display = 'none';
+    shell.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    window._demoShellActiveId = null;
+    if (id) {
+      // Fire-and-forget stop; show transitional 'stopping' state on the card.
+      try { fetch(API + '/stop/' + id, { method: 'POST' }); } catch {}
+      try { updateCardState(id, 'stopping'); } catch {}
+      runningDemos.delete(id);
+      // Re-poll status after 3s to flip back to 'ready' once stopped.
+      setTimeout(async () => {
+        try {
+          const r = await fetch(`${API}/status/${id}`);
+          const d = await r.json();
+          if (d.installed && d.model_ok) updateCardState(id, 'ready');
+          else if (d.installed)          updateCardState(id, 'ready');
+          else                            updateCardState(id, 'needs-setup');
+        } catch { try { updateCardState(id, 'ready'); } catch {} }
+        try { updateStatusBar(); } catch {}
+      }, 3000);
+    }
+  };
+
+  // Helper: read the demo's display name from its card title.
+  window._getDemoDisplayName = function (id) {
+    const btn = document.getElementById('card-btn-' + id);
+    const card = btn ? btn.closest('.card') : null;
+    const t = card ? card.querySelector('.card-title') : null;
+    return (t && t.textContent.trim()) || id;
+  };
+})();
+
+window.addEventListener('DOMContentLoaded', () => {
+  checkAPI();
+  checkBenchStatus();
+  checkRobotStatus();
+  refreshLoadTimes();
+  setInterval(checkRobotStatus, 15000);
+});
+
+async function installAll() {
+  const ids = ['maritime','pharmacy','pii','medical','construction','translation'];
+  const btn = document.getElementById('btnInstallAll');
+  btn.className = 'btn btn-installing';
+  btn.textContent = 'Installing all...';
+  btn.onclick = null;
+  for (const id of ids) {
+    const statusEl = document.getElementById('status-' + id);
+    if (statusEl && statusEl.textContent.trim().startsWith('✓')) continue;
+    const installBtn = document.getElementById('btn-' + id);
+    if (!installBtn || !installBtn.className.includes('btn-install')) continue;
+    installBtn.click();
+    await new Promise(resolve => {
+      const check = setInterval(() => {
+        const b = document.getElementById('btn-' + id);
+        if (!b || b.className.includes('btn-installed') ||
+            (b.className.includes('btn-install') && b.textContent.includes('Retry'))) {
+          clearInterval(check); resolve();
+        }
+      }, 3000);
+    });
+  }
+  btn.className = 'btn btn-installed';
+  btn.textContent = '✓ All Installed';
+}
+
+
+// All values are arrays of ports occupied by the demo. First port is the
+// primary user-facing port (used for display and for opening the demo URL).
+// Additional ports participate in collision detection and port-check polling.
+const PORT_CONFLICTS = {
+  maritime: [8000], pharmacy: [8000], pii: [8000, 8083],
+  medical: [8090], construction: [8091], translation: [8092],
+  pipeline: [8088], vision: [8094]
+};
+function portsOverlap(a, b) {
+  for (const p of a) if (b.includes(p)) return true;
+  return false;
+}
+const HEALTH_CHECK_DEMOS = ['maritime', 'pharmacy', 'pii', 'medical'];
+const HEALTH_CHECK_PATHS = {
+  'maritime': '/api/health',
+  'pharmacy': '/api/health',
+  'pii': '/',
+  'medical': '/health'
+};
+const PORT_PATHS = {
+  maritime:'/', pharmacy:'/', pii:'/app/',
+  medical:'/', construction:'/', translation:'/',
+  pipeline:'/', vision:'/'
+};
+const MEM_GB = {
+  maritime:9, pharmacy:28, pii:20, medical:6, construction:2, translation:2, pipeline:42, vision:44
+};
+const DOCKER_DEMOS = ['maritime','pharmacy','medical'];
+const LIGHT_DEMOS  = ['construction','translation'];
+
+// Track what is currently running
+let runningDemos = new Set();
+
+async function refreshRunning() {
+  try {
+    const r = await fetch(API+'/running');
+    const d = await r.json();
+    runningDemos = new Set(d.running);
+    d.running.forEach(id => { setRunningState(id); updateCardState(id, 'live'); });
+    updateStatusBar();
+    // Re-enable start buttons for non-running installed demos
+    ['maritime','pharmacy','pii','medical','construction','translation'].forEach(id => {
+      if (!runningDemos.has(id)) {
+        const sb = document.getElementById('start-' + id);
+        if (sb && sb.className.includes('btn-running')) {
+          sb.className = 'btn btn-start';
+          sb.textContent = '▶ Start';
+          sb.onclick = () => startDemo(id);
+        }
+      }
+    });
+  } catch {}
+}
+
+function setRunningState(id) {
+  const sb = document.getElementById('start-' + id);
+  const lb = document.getElementById('launch-btn-' + id);
+  if (sb) {
+    sb.className = 'btn btn-stop';
+    sb.textContent = '■ Stop';
+    sb.onclick = () => stopDemo(id);
+  }
+  if (lb) { lb.classList.remove('launch-disabled'); }
+}
+
+function getPortConflict(id) {
+  const ports = PORT_CONFLICTS[id] || [];
+  for (const running of runningDemos) {
+    if (running === id) continue;
+    const otherPorts = PORT_CONFLICTS[running] || [];
+    if (portsOverlap(ports, otherPorts)) {
+      const sharedPort = ports.find(p => otherPorts.includes(p));
+      return { demo: running, port: sharedPort };
+    }
+  }
+  return null;
+}
+
+function getTotalMemory() {
+  let total = 0;
+  runningDemos.forEach(id => { total += MEM_GB[id] || 0; });
+  return total;
+}
+
+// Shared pre-stop (GPU mutual exclusion): stop every other running demo before
+// launching `keepId`. Used by BOTH loadAndOpen and startDemo so neither client
+// path can leave a conflicting demo (esp. the shared port 8000) running. The
+// install server also enforces this server-side (#14); this is the fast client
+// path that also updates card UI state.
+async function stopOtherRunningDemos(keepId) {
+  for (const runningId of Array.from(runningDemos)) {
+    if (runningId === keepId) continue;
+    try { await fetch(API+'/stop/' + runningId, {method:'POST'}); } catch {}
+    updateCardState(runningId, 'ready');
+    runningDemos.delete(runningId);
+    clearTicker(runningId);
+  }
+  updateStatusBar();
+}
+
+async function startDemo(id) {
+  // GPU mutual exclusion — stop all other running demos first (same pre-stop
+  // path as loadAndOpen). Replaces the old single-conflict confirm that relied
+  // on stale client state; the server-side safety net enforces this too (#14).
+  await stopOtherRunningDemos(id);
+
+  // Warn if memory will exceed 100GB
+  const newTotal = getTotalMemory() + (MEM_GB[id] || 0);
+  if (newTotal > 100) {
+    if (!confirm(`Starting this demo will use ~${newTotal}GB of the Nano's 128GB memory.
+
+This may cause slowdowns. Continue?`)) return;
+  }
+
+  const sb = document.getElementById('start-' + id);
+  const lb = document.getElementById('launch-btn-' + id);
+  const con = document.getElementById('console-' + id);
+  const out = document.getElementById('out-' + id);
+  const lbl = document.getElementById('steplbl-' + id);
+  const row = document.getElementById('row-' + id);
+
+  if (sb) { sb.className = 'btn btn-starting'; sb.textContent = '⏳ Starting...'; sb.onclick = null; }
+  if (row) row.classList.add('expanded');
+  if (out) out.textContent = '';
+  if (lbl) lbl.textContent = 'Starting service...';
+
+  const es = new EventSource(API+'/start/' + id);
+  es.onmessage = e => {
+    const m = JSON.parse(e.data);
+    if (m.type === 'output' && out) addOut(out, m.line + '\n');
+    if (m.type === 'complete' || m.type === 'error') {
+      es.close();
+      pollPort(id);
+    }
+  };
+  es.onerror = () => { es.close(); pollPort(id); };
+}
+
+function pollPort(id) {
+  const ports = PORT_CONFLICTS[id] || [];
+  const primaryPort = ports[0];
+  let attempts = 0;
+  const iv = setInterval(async () => {
+    attempts++;
+    try {
+      const useHealth = HEALTH_CHECK_DEMOS.includes(id);
+      let isReady = false;
+      if (useHealth) {
+        const path = HEALTH_CHECK_PATHS[id] || '/health';
+        const r = await fetch(`${API}/health_check/${id}?path=${encodeURIComponent(path)}`);
+        const d = await r.json();
+        isReady = d.ready === true;
+      } else {
+        // Demo is ready when any of its ports responds
+        for (const p of ports) {
+          try {
+            const r = await fetch(`${API}/port_check/${p}`);
+            const d = await r.json();
+            if (d.alive === true) { isReady = true; break; }
+          } catch {}
+        }
+      }
+      if (isReady) {
+        clearInterval(iv);
+        runningDemos.add(id);
+        setRunningState(id);
+        updateCardState(id, 'live');
+        const lbl = document.getElementById('steplbl-' + id);
+        if (lbl) lbl.textContent = '✓ Running on port ' + primaryPort;
+      }
+    } catch {}
+    if (attempts > 60) {
+      clearInterval(iv);
+      const sb = document.getElementById('start-' + id);
+      if (sb) { sb.className = 'btn btn-start'; sb.textContent = '▶ Start'; sb.onclick = () => startDemo(id); }
+    }
+  }, 5000);
+}
+
+async function stopDemo(id) {
+  const sb = document.getElementById('start-' + id);
+  const lb = document.getElementById('launch-btn-' + id);
+  if (sb) { sb.className = 'btn btn-starting'; sb.textContent = '⏳ Stopping...'; sb.onclick = null; }
+  try {
+    await fetch(API+'/stop/' + id, {method:'POST'});
+  } catch {}
+  await new Promise(r => setTimeout(r, 2000));
+  runningDemos.delete(id);
+  updateCardState(id, 'ready');
+  if (sb) { sb.className = 'btn btn-start'; sb.textContent = '▶ Start'; sb.onclick = () => startDemo(id); }
+  if (lb) { lb.classList.add('launch-disabled'); }
+}
+
+
+const LOAD_TIMES = {
+  maritime:'3–5 min', pharmacy:'5–8 min', pii:'4–6 min',
+  medical:'2–4 min', construction:'30–60 sec', translation:'60–90 sec'
+};
+
+// Replace the hardcoded "⏱ ~X min to load" in a card's .card-meta with a measured time.
+function updateLoadTimeDisplay(id, seconds) {
+  const card = document.getElementById('card-btn-' + id)?.closest('.card');
+  if (!card) return;
+  // The load-time line is the first .card-meta > div whose text contains "to load".
+  const divs = card.querySelectorAll('.card-meta > div');
+  for (const d of divs) {
+    if (d.textContent.includes('to load')) {
+      d.textContent = '⏱ ~' + Math.max(1, Math.round(seconds)) + 's to load';
+      break;
+    }
+  }
+}
+
+// On page load, fetch all measured load times and update every card that has one.
+async function refreshLoadTimes() {
+  try {
+    const r = await fetch(API + '/load_times');
+    if (!r.ok) return;
+    const data = await r.json();
+    for (const id in data) updateLoadTimeDisplay(id, data[id]);
+  } catch {}
+}
+
+// Key phrases to surface from Docker/process output as friendly messages
+const LOAD_MESSAGES = [
+  [/pulling|downloading/i,       '📥 Downloading components…'],
+  [/building/i,                  '🔨 Building container…'],
+  [/starting|launching/i,       '🚀 Starting service…'],
+  [/loading model|loading weight/i, '🧠 Loading model into memory…'],
+  [/loading/i,                   '⏳ Loading…'],
+  [/vllm|llama/i,                '⚙️  Initializing inference engine…'],
+  [/whisper/i,                   '🎙️  Loading speech recognition…'],
+  [/ready|complete|success/i,    '✅ Almost ready…'],
+  [/error|failed/i,              '⚠️  Issue detected — retrying…'],
+];
+
+function getLoadMessage(line) {
+  for (const [pattern, msg] of LOAD_MESSAGES) {
+    if (pattern.test(line)) return msg;
+  }
+  return null;
+}
+
+function appendLoadConsole(id, text) {
+  // Now a single-line status ticker — replaces (not appends) the visible message.
+  const el = document.getElementById('status-ticker-' + id);
+  if (!el) return;
+  el.classList.remove('running');
+  el.classList.add('active');
+  el.textContent = text;
+}
+
+function setTickerRunning(id) {
+  const el = document.getElementById('status-ticker-' + id);
+  if (!el) return;
+  const port = (PORT_CONFLICTS[id] || [])[0];
+  el.textContent = '● Running at http://' + nanoIP + ':' + port;
+  el.classList.add('active', 'running');
+}
+
+function clearTicker(id) {
+  const el = document.getElementById('status-ticker-' + id);
+  if (!el) return;
+  el.textContent = '';
+  el.classList.remove('active', 'running');
+}
+
+function startElapsedTimer(id) {
+  const btn = document.getElementById('card-btn-' + id);
+  const start = Date.now();
+  const iv = setInterval(() => {
+    if (!btn || !btn.className.includes('btn-loading')) {
+      clearInterval(iv);
+      return;
+    }
+    const elapsed = Math.floor((Date.now() - start) / 1000);
+    const m = Math.floor(elapsed / 60);
+    const s = elapsed % 60;
+    const timeStr = m > 0 ? m + 'm ' + s + 's' : s + 's';
+    btn.textContent = '⏳ Loading… ' + timeStr;
+  }, 1000);
+  return iv;
+}
+
+function checkGPUConflict(demoId) {
+  return new Promise(async (resolve) => {
+    try {
+      const r = await fetch(API+'/bench_status');
+      const d = await r.json();
+      if (!d.bench_running) { resolve(true); return; }
+    } catch { resolve(true); return; }
+
+    const bg = document.getElementById('gpuConflictBg');
+    bg.classList.add('open');
+
+    const stopBtn = document.getElementById('gpu-conflict-stop');
+    const cancelBtn = document.getElementById('gpu-conflict-cancel');
+
+    function cleanup() {
+      bg.classList.remove('open');
+      stopBtn.replaceWith(stopBtn.cloneNode(true));
+      cancelBtn.replaceWith(cancelBtn.cloneNode(true));
+    }
+
+    document.getElementById('gpu-conflict-stop').addEventListener('click', async () => {
+      stopBtn.textContent = '⏳ Stopping…';
+      stopBtn.style.pointerEvents = 'none';
+      try { await fetch(API+'/bench_stop', {method:'POST'}); } catch {}
+      await new Promise(r => setTimeout(r, 2000));
+      cleanup();
+      resolve(true);
+    }, {once:true});
+
+    document.getElementById('gpu-conflict-cancel').addEventListener('click', () => {
+      cleanup();
+      resolve(false);
+    }, {once:true});
+  });
+}
+
+async function loadAndOpen(id) {
+  // Capture click time for elapsed-load-time measurement (reported on 'live' transition).
+  const _clickT = Date.now();
+  // Immediate synchronous feedback BEFORE any async work — the stop/release/sleep chain
+  // below can take up to 4s and the user needs to know their click registered.
+  const initialBtn = document.getElementById('card-btn-' + id);
+  let _origText = null, _origClass = null;
+  if (initialBtn) {
+    _origText = initialBtn.textContent;
+    _origClass = initialBtn.className;
+    initialBtn.textContent = '⏳ Starting...';
+    initialBtn.className = 'btn btn-loading';
+    initialBtn.disabled = true;
+    initialBtn.style.pointerEvents = 'none';
+  }
+  appendLoadConsole(id, 'Preparing to launch...');
+  const restoreInitialBtn = () => {
+    if (initialBtn && _origText !== null) {
+      initialBtn.textContent = _origText;
+      initialBtn.className = _origClass;
+      initialBtn.disabled = false;
+      initialBtn.style.pointerEvents = '';
+    }
+    clearTicker(id);
+  };
+
+  // GPU mutual exclusion — only one demo runs at a time. Stop all others before launching.
+  await stopOtherRunningDemos(id);
+
+  const canProceed = await checkGPUConflict(id);
+  if (!canProceed) { restoreInitialBtn(); return; }
+
+  // Stop Performance Lab and release GPU memory before any demo launch
+  try { await fetch(API+'/bench_stop', {method:'POST'}); } catch {}
+
+  const btn = document.getElementById('card-btn-' + id);
+  const ports = PORT_CONFLICTS[id] || [];
+  const port = ports[0];
+  const path = PORT_PATHS[id];
+
+  // Release Ollama GPU memory before starting vLLM/Ollama demos
+  const VLLM_DEMOS = ['maritime', 'medical', 'pharmacy'];
+  const OLLAMA_DEMOS = ['pipeline', 'pii', 'vision'];
+  if ((VLLM_DEMOS.includes(id) || OLLAMA_DEMOS.includes(id)) && !runningDemos.has(id)) {
+    try {
+      await fetch(API+'/ollama_release', {method:'POST'});
+      await new Promise(r => setTimeout(r, 3000));
+    } catch {}
+  }
+
+  // Already running — sync card state to 'live' so its button becomes "▶ Launch".
+  // Do NOT auto-open the iframe; the user has to click Launch (two-click flow).
+  if (runningDemos.has(id)) {
+    updateCardState(id, 'live');
+    appendLoadConsole(id, '✅ Demo already running — click "Launch" to display.');
+    restoreInitialBtn();
+    return;
+  }
+
+  // Set button to loading state
+  if (btn) { btn.className = 'btn btn-loading'; btn.textContent = '⏳ Loading…'; }
+  clearTicker(id);
+
+  const est = LOAD_TIMES[id] || 'a few minutes';
+  appendLoadConsole(id, '▶ Starting ' + (btn?.closest('.card')?.querySelector('.card-title')?.textContent || id));
+  appendLoadConsole(id, '⏱  Estimated load time: ' + est);
+  appendLoadConsole(id, '─────────────────────────────────────────');
+
+  // Start elapsed timer
+  const timerIv = startElapsedTimer(id);
+
+  // Clear dedup tracker for this demo
+  if (window._shownLoadMessages) delete window._shownLoadMessages[id];
+
+  // Stream output from start endpoint
+  try {
+    const es = new EventSource(API+'/start/' + id);
+    es.onmessage = e => {
+      const m = JSON.parse(e.data);
+      if (m.type === 'output' && m.line) {
+        if (!window._shownLoadMessages) window._shownLoadMessages = {};
+        if (!window._shownLoadMessages[id]) window._shownLoadMessages[id] = new Set();
+        const friendly = getLoadMessage(m.line);
+        if (friendly && !window._shownLoadMessages[id].has(friendly)) {
+          window._shownLoadMessages[id].add(friendly);
+          appendLoadConsole(id, friendly);
+        }
+      }
+      if (m.type === 'complete' || m.type === 'error') es.close();
+    };
+    es.onerror = () => es.close();
+  } catch {}
+
+  // Poll port until alive
+  let attempts = 0;
+  const pollIv = setInterval(async () => {
+    attempts++;
+    try {
+      const useHealth = HEALTH_CHECK_DEMOS.includes(id);
+      let isReady = false;
+      if (useHealth) {
+        const path = HEALTH_CHECK_PATHS[id] || '/health';
+        const r = await fetch(`${API}/health_check/${id}?path=${encodeURIComponent(path)}`);
+        const d = await r.json();
+        isReady = d.ready === true;
+      } else {
+        for (const p of ports) {
+          try {
+            const r = await fetch(`${API}/port_check/${p}`);
+            const d = await r.json();
+            if (d.alive === true) { isReady = true; break; }
+          } catch {}
+        }
+      }
+      if (isReady) {
+        clearInterval(pollIv);
+        clearInterval(timerIv);
+        runningDemos.add(id);
+        // Two-click flow: just transition the card to 'live' (button becomes "▶ Launch").
+        // The iframe shell is NOT opened here — a separate user click on Launch does that.
+        updateCardState(id, 'live');
+        // Report measured load time (click → live) to backend; updates the card display.
+        const _elapsedSec = (Date.now() - _clickT) / 1000;
+        try { fetch(`${API}/load_time/${id}?seconds=${_elapsedSec.toFixed(1)}`); } catch {}
+        updateLoadTimeDisplay(id, _elapsedSec);
+        appendLoadConsole(id, '✅ Demo ready — click "Launch" to display.');
+        updateStatusBar();
+      }
+    } catch {}
+    if (attempts > 120) {
+      clearInterval(pollIv);
+      clearInterval(timerIv);
+      appendLoadConsole(id, '⚠️  Timed out waiting for port ' + port + '. Try again.');
+      updateCardState(id, 'ready');
+    }
+  }, 5000);
+}
+
+function updateStatusBar() {
+  const bar = document.getElementById('demoStatusBar');
+  const txt = document.getElementById('demoStatusText');
+  if (!bar || !txt) return;
+  if (runningDemos.size === 0) {
+    bar.style.display = 'none';
+    return;
+  }
+  const id = Array.from(runningDemos)[0];
+  const name = document.querySelector('#row-' + id + ' .ir-name')?.textContent || id;
+  const port = (PORT_CONFLICTS[id] || [])[0];
+  bar.style.display = 'flex';
+  txt.textContent = name + ' is loaded and running on port ' + port;
+}
+
+async function checkRobotStatus() {
+  try {
+    const r = await fetch(API+'/robot_check');
+    const d = await r.json();
+    const btn = document.getElementById('card-btn-medical');
+    const robotWarn = document.getElementById('robot-warn-medical');
+
+    if (d.robot_found) {
+      if (btn) {
+        btn.removeAttribute('disabled');
+        btn.style.background = '';
+        btn.style.color = '';
+        btn.style.border = '';
+        btn.style.cursor = '';
+        btn.style.pointerEvents = '';
+        btn.textContent = '▶ Load Demo';
+        btn.onclick = () => loadAndOpen('medical');
+        btn.className = 'btn btn-primary';
+      }
+      if (robotWarn) {
+        robotWarn.style.color = '#16a34a';
+        robotWarn.textContent = '✓ Reachy Mini detected on network';
+      }
+    } else {
+      if (robotWarn) {
+        robotWarn.style.color = '#d97706';
+        robotWarn.textContent = '⚠ Requires Reachy Mini robot';
+      }
+    }
+  } catch {}
+}
+
+async function checkBenchStatus() {
+  try {
+    const r = await fetch(API+'/bench_status');
+    const d = await r.json();
+    const banner = document.getElementById('benchWarningBanner');
+    if (banner) {
+      banner.style.display = d.bench_running ? 'flex' : 'none';
+    }
+  } catch {}
+}
+
+// Exit Demo Center — FULL teardown via the install server's /exit_kiosk:
+// stops every demo, releases all Ollama models, closes the kiosk browser, then
+// stops the :8085/:8086 servers (last). The Nano returns to the desktop;
+// relaunch from the desktop icon to rebuild the whole stack in a few seconds.
+function exitDemoCenter() {
+  if (!confirm('Exit Demo Center? This stops all running demos and closes the display. The Nano returns to the desktop — relaunch from the desktop icon.')) return;
+  // Fire-and-forget: the server runs the whole teardown in a detached process
+  // (it kills the :8086 API it's running on), so we just kick it off.
+  try { fetch(API + '/exit_kiosk', { method: 'POST' }); } catch {}
+}
+
+async function resetAll() {
+  if (!confirm('This will stop all running demos and restart the Demo Center. Continue?')) return;
+  const btn = document.getElementById('resetAllBtn');
+  const originalLabel = btn ? btn.textContent : '';
+  if (btn) { btn.textContent = '⏳ Resetting…'; btn.style.pointerEvents = 'none'; btn.style.opacity = '0.7'; }
+
+  // 1. Stop every running demo
+  const ids = Array.from(runningDemos);
+  await Promise.all(ids.map(id =>
+    fetch(API + '/stop/' + id, {method: 'POST'}).catch(() => {})
+  ));
+
+  // 2. Release Ollama models
+  try { await fetch(API + '/ollama_release', {method: 'POST'}); } catch {}
+
+  // 3. Stop Performance Lab if running
+  try { await fetch(API + '/bench_stop', {method: 'POST'}); } catch {}
+
+  // 4. Give services a moment to actually stop
+  await new Promise(r => setTimeout(r, 2000));
+
+  // 5. Reset card states and clear the running set
+  ids.forEach(id => updateCardState(id, 'ready'));
+  runningDemos.clear();
+  updateStatusBar();
+
+  // 6. Brief confirmation in the status bar
+  const bar = document.getElementById('demoStatusBar');
+  const txt = document.getElementById('demoStatusText');
+  if (bar && txt) {
+    bar.style.display = 'flex';
+    bar.style.background = '#f0fdf4';
+    bar.style.borderBottom = '1px solid #bbf7d0';
+    txt.style.color = '#166534';
+    txt.textContent = '✓ Reset complete — all demos stopped, GPU memory released.';
+    setTimeout(() => { if (bar) bar.style.display = 'none'; }, 5000);
+  }
+
+  if (btn) { btn.textContent = originalLabel || '⟲ Reset All'; btn.style.pointerEvents = ''; btn.style.opacity = ''; }
+  // Refresh the running list from the server in case anything is still up
+  refreshRunning();
+}
+
+async function stopBenchApp() {
+  const btn = document.getElementById('btnStopBench');
+  const banner = document.getElementById('benchWarningBanner');
+  if (btn) {
+    btn.textContent = '⏳ Stopping…';
+    btn.style.pointerEvents = 'none';
+    btn.style.opacity = '0.7';
+  }
+  // Fire the stop request — returns immediately
+  try {
+    await fetch(API+'/bench_stop', {method:'POST'});
+  } catch {}
+  // Poll bench_status until bench is confirmed stopped
+  let attempts = 0;
+  const iv = setInterval(async () => {
+    attempts++;
+    try {
+      const r = await fetch(API+'/bench_status');
+      const d = await r.json();
+      if (!d.bench_running) {
+        clearInterval(iv);
+        if (banner) banner.style.display = 'none';
+        const bar = document.getElementById('demoStatusBar');
+        const txt = document.getElementById('demoStatusText');
+        if (bar && txt) {
+          bar.style.display = 'flex';
+          bar.style.background = '#f0fdf4';
+          bar.style.borderBottom = '1px solid #bbf7d0';
+          txt.style.color = '#166534';
+          txt.textContent = '✓ Performance Lab stopped — GPU memory released. All demos are now available.';
+          setTimeout(() => { if(bar) bar.style.display = 'none'; }, 6000);
+        }
+      }
+    } catch {}
+    if (attempts > 30) clearInterval(iv);
+  }, 2000);
+}
+
+async function checkAPI(){
+  try{
+    const r = await fetch(`${API}/health`,{signal:AbortSignal.timeout(2000)});
+    if(r.ok){ document.getElementById('apiNotice').style.display='none'; refreshReadiness();
+    document.getElementById('installAllBanner').style.display='flex';
+    refreshRunning(); checkBenchStatus(); }
+    else showAPINotice();
+  } catch{ showAPINotice(); }
+}
+
+function showAPINotice(){
+  document.getElementById('apiNotice').style.display='block';
+  document.querySelectorAll('.btn-install').forEach(b=>{ b.disabled=true; b.title='Start run_demos.sh to activate'; });
+}
+
+async function checkAllStatuses(){
+  await Promise.all(DEMO_IDS.map(async (id) => {
+    try {
+      const r = await fetch(`${API}/status/${id}`);
+      const d = await r.json();
+      if (d.installed && d.model_ok) markInstalled(id);
+      else if (d.installed) markBadge(id, 'ib-partial', 'Model Missing');
+      else markNotInstalled(id);
+    } catch {}
+  }));
+}
+
+function markInstalled(id){
+  if(runningDemos.has(id)) updateCardState(id,'live');
+  else updateCardState(id,'ready');
+  markReqsMet(id);
+}
+
+function updateCardState(id, state){
+  const cardBtn = document.getElementById(`card-btn-${id}`);
+  const badge = document.getElementById(`status-${id}`);
+  const cbadge = document.getElementById(`cbadge-${id}`);
+  const installBtn = document.getElementById(`btn-${id}`);
+  const isMedical = (id === 'medical');
+  const card = cbadge ? cbadge.closest('.card') : null;
+
+  // Ensure the running badge exists once, sitting next to cbadge
+  if(card && cbadge && !card.querySelector('.card-running-badge')){
+    const rb = document.createElement('span');
+    rb.className = 'card-running-badge';
+    rb.textContent = '● Running';
+    cbadge.insertAdjacentElement('afterend', rb);
+  }
+
+  if(state === 'needs-setup'){
+    if(badge){badge.className='ibadge ib-warn';badge.textContent='Needs Setup';}
+    if(cbadge){cbadge.className='ibadge ib-warn';cbadge.textContent='Needs Setup';}
+    if(cardBtn && !isMedical){cardBtn.className='btn btn-action';cardBtn.textContent='Install';cardBtn.style.pointerEvents='auto';cardBtn.onclick=()=>openModal(parseInt(cardBtn.closest('.card').dataset.demo));}
+    if(installBtn){installBtn.style.display='';installBtn.className='btn btn-install';installBtn.textContent='⬇ Install';}
+    if(card){card.classList.remove('is-running');}
+    clearTicker(id);
+  } else if(state === 'ready'){
+    if(badge){badge.className='ibadge ib-ok';badge.textContent='Installed';}
+    if(cbadge){cbadge.className='ibadge ib-ok';cbadge.textContent='Installed';}
+    if(cardBtn && !isMedical){cardBtn.className='btn btn-action';cardBtn.textContent='▶ Load Demo';cardBtn.style.pointerEvents='auto';cardBtn.removeAttribute('disabled');cardBtn.onclick=()=>loadAndOpen(id);}
+    if(installBtn){installBtn.style.display='none';}
+    if(card){card.classList.remove('is-running');}
+    clearTicker(id);
+  } else if(state === 'live'){
+    if(badge){badge.className='ibadge ib-live';badge.textContent='● Live';}
+    if(cbadge){cbadge.className='ibadge ib-live';cbadge.textContent='● Live';}
+    if(cardBtn && !isMedical){cardBtn.className='btn btn-live';cardBtn.textContent='▶ Launch';cardBtn.style.pointerEvents='auto';cardBtn.removeAttribute('disabled');cardBtn.onclick=()=>openDemo(id);}
+    if(installBtn){installBtn.style.display='none';}
+    if(card){card.classList.add('is-running');}
+    setTickerRunning(id);
+  } else if(state === 'stopping'){
+    // Transitional state after Return: same visual as 'live' but with "Stopping..." text.
+    if(badge){badge.className='ibadge ib-live';badge.textContent='● Stopping...';}
+    if(cbadge){cbadge.className='ibadge ib-live';cbadge.textContent='● Stopping...';}
+    if(cardBtn && !isMedical){cardBtn.className='btn btn-loading';cardBtn.textContent='⏳ Stopping…';cardBtn.style.pointerEvents='none';cardBtn.setAttribute('disabled','disabled');}
+    if(installBtn){installBtn.style.display='none';}
+    if(card){card.classList.add('is-running');}
+    setTickerRunning(id);
+  }
+}
+
+function openDemo(id){
+  const port = (PORT_CONFLICTS[id] || [])[0];
+  const path = PORT_PATHS[id];
+  // Cache-buster: the kiosk's persistent chromium profile can serve a stale cached
+  // build of a demo page. A fresh ?v= each launch forces a real fetch so an updated
+  // demo UI always loads (pairs with no-store on the demo's side).
+  const url = 'http://' + nanoIP + ':' + port + path +
+    (path.indexOf('?') === -1 ? '?' : '&') + 'v=' + Date.now();
+  openDemoShell(id, url, _getDemoDisplayName(id));
+}
+
+function markBadge(id,cls,txt){
+  const el=document.getElementById(`status-${id}`);
+  if(el){el.className='ibadge '+cls;el.textContent=txt;}
+}
+
+function markReqsMet(id) {
+  const row = document.getElementById('row-' + id);
+  if (!row) return;
+  row.querySelectorAll('.rline.unmet, .rline.partial').forEach(el => {
+    el.className = 'rline met';
+    const ri = el.querySelector('.ri');
+    if (ri) ri.textContent = '✓';
+  });
+}
+
+function markReqsUnmet(id) {
+  const row = document.getElementById('row-' + id);
+  if (!row) return;
+  row.querySelectorAll('.rline.met').forEach(el => {
+    if (el.getAttribute('data-stable') === 'true') return;
+    el.className = 'rline unmet';
+    const ri = el.querySelector('.ri');
+    if (ri) ri.textContent = '✗';
+  });
+}
+
+function markNotInstalled(id){
+  updateCardState(id,'needs-setup');
+  markReqsUnmet(id);
+}
+
+function updateInstallAllButton(){
+  const btn = document.getElementById('btnInstallAll');
+  if (!btn) return;
+  let allInstalled = true;
+  for (const id of DEMO_IDS) {
+    const badge = document.getElementById('status-' + id);
+    if (!badge) { allInstalled = false; break; }
+    const cls = badge.className || '';
+    if (!cls.includes('ib-ok') && !cls.includes('ib-live')) { allInstalled = false; break; }
+  }
+  if (allInstalled) {
+    btn.className = 'btn btn-installed';
+    btn.textContent = 'All Demos Installed';
+    btn.disabled = true;
+    btn.onclick = null;
+    btn.style.cursor = 'not-allowed';
+    btn.title = 'All 8 demos report installed and model_ok';
+  } else {
+    btn.className = 'btn btn-install';
+    btn.textContent = 'Install All Demos';
+    btn.disabled = false;
+    btn.onclick = installAll;
+    btn.style.cursor = '';
+    btn.title = '';
+  }
+}
+
+async function refreshReadiness(){
+  await checkAllStatuses();
+  updateInstallAllButton();
+}
+
+// ── INSTALL ───────────────────────────────────────────────────────────────
+function startInstall(id){
+  const row=document.getElementById(`row-${id}`);
+  const out=document.getElementById(`out-${id}`);
+  const stepsEl=document.getElementById(`steps-${id}`);
+  const lbl=document.getElementById(`steplbl-${id}`);
+  const btn=document.getElementById(`btn-${id}`);
+  const title=document.getElementById(`ict-${id}`);
+
+  row.classList.add('expanded');
+  const n=STEP_COUNTS[id]||3;
+  stepsEl.innerHTML=Array.from({length:n},(_,i)=>`<div class="step-pip" id="pip-${id}-${i}"></div>`).join('');
+  out.textContent='';
+  btn.className='btn btn-installing';
+  btn.textContent='⏳ Installing…';
+
+  const es=new EventSource(`${API}/install/${id}`);
+  let cur=-1;
+
+  es.onmessage=e=>{
+    const m=JSON.parse(e.data);
+    if(m.type==='start'){
+      title.textContent=`Installing: ${m.name}`;
+      addOut(out,`▶ ${m.name}\n${'─'.repeat(48)}\n`);
+    } else if(m.type==='step_start'){
+      cur=m.step;
+      pip(id,m.step,'active');
+      if(m.step>0) pip(id,m.step-1,'done');
+      lbl.textContent=`Step ${m.step+1} of ${m.total}: ${m.label}`;
+      addOut(out,`\n[${m.step+1}/${m.total}] ${m.label}\n`);
+    } else if(m.type==='step_skip'){
+      pip(id,m.step,'done');
+      addOut(out,`↷ ${m.msg}\n`);
+    } else if(m.type==='step_done'){
+      pip(id,cur,'done');
+    } else if(m.type==='output'){
+      addOut(out,m.line+'\n');
+    } else if(m.type==='note'){
+      addOut(out,`\nℹ  ${m.msg}\n`);
+    } else if(m.type==='complete'){
+      for(let i=0;i<n;i++) pip(id,i,'done');
+      lbl.textContent='✓ Installation complete';
+      title.textContent='Installation log';
+      addOut(out,`\n${'─'.repeat(48)}\n✓ Done!`);
+      if(m.port) addOut(out,`\n▶ http://${nanoIP}:${m.port}${m.path||'/'}`);
+      addOut(out,'\n');
+      markInstalled(id);
+      es.close();
+    } else if(m.type==='error'){
+      addOut(out,`\n✗ ${m.msg}\n`);
+      pip(id,cur,'error');
+      lbl.textContent='✗ Error — check output above';
+      btn.className='btn btn-install';
+      btn.textContent='↺ Retry';
+      es.close();
+    }
+  };
+
+  es.onerror=()=>{
+    addOut(out,'\n✗ Lost connection to install server.\n');
+    btn.className='btn btn-install';
+    btn.textContent='↺ Retry';
+    es.close();
+  };
+}
+
+function pip(id,i,state){
+  const el=document.getElementById(`pip-${id}-${i}`);
+  if(el) el.className='step-pip '+state;
+}
+function addOut(el,t){ el.textContent+=t; el.scrollTop=el.scrollHeight; }
+function closeConsole(id){ document.getElementById(`row-${id}`).classList.remove('expanded'); }
+
+// ── LAUNCH ────────────────────────────────────────────────────────────────
+function launchR(e,port,path){ e.preventDefault(); window.open(`http://${nanoIP}:${port}${path}`,'_blank'); }
+function launch(e,idx){ e.preventDefault(); const d=DEMOS[idx]; if(d.port) window.open(`http://${nanoIP}:${d.port}${d.path}`,'_blank'); }
+
+// ── TABS / FILTER ─────────────────────────────────────────────────────────
+function switchTab(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'readiness') refreshReadiness();
+}
+document.querySelectorAll('.fbtn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    const f=b.dataset.filter;
+    document.querySelectorAll('.card').forEach(c=>{c.style.display=(f==='all'||c.dataset.industry===f)?'':'none';});
+  });
+});
+
+// ── DEMO DATA ─────────────────────────────────────────────────────────────
+const DEMOS=[
+  {id:0,icon:'🛢️',color:'#0891b2',kicker:'Energy · Edge AI',title:'Pipeline Pulse — O&G AI Monitoring',port:8088,path:'/',
+   desc:'Live oil rig monitoring dashboard with LLM-powered anomaly analysis running entirely on-device. 13 simulated O&G sensors stream into a dashboard whose incident briefs are generated locally by llama3.1:70b via Ollama. Real GPU telemetry from pynvml. Cloud API calls: 0.',
+   talk:'"13 rig sensors streaming into a dashboard. Every anomaly brief is written by a 70-billion parameter model running on this Nano — 1 to 2 seconds, token-streamed. The Cloud API Calls counter stays at zero the entire demo."',
+   pts:[{s:'Model',t:' — llama3.1:70b via Ollama, streaming SSE responses.'},{s:'Inference',t:' — ~1–2s warm TTFT, streamed token-by-token.'},{s:'Sensors',t:' — 13 simulated O&G sensors (SPP, H₂S, BOP, mud flow, pit volume, ROP, WOB, RPM, torque, hook load, DiffP, total gas, pump) with scripted incident anomalies.'},{s:'Telemetry',t:' — real pynvml GPU stats updated each second, no cloud APIs.'}],
+   },
+  {id:1,icon:'👁️',color:'#1e88e5',kicker:'Computer Vision · Edge AI',title:'AI Vision — Real-Time Object Detection',port:8094,path:'/',
+   desc:'Real-time multi-camera object detection with scenario-based monitoring. 4 industry scenarios, YOLOv8s TRT FP16 on GB10 Blackwell, LLM-powered alert generation, zero cloud dependency.',
+   talk:'"Multi-camera, four scenarios, one Nano. The detector runs YOLOv8s FP16 on the GB10 at roughly 175 QPS aggregate across six streams — about 3.4 ms GPU compute per inference. When detection thresholds trigger, a 70B-parameter model writes the incident brief locally. No cloud, no data egress."',
+   pts:[{s:'Model',t:' — YOLOv8s FP16 via TensorRT 10.15.1, 80-class COCO.'},{s:'Scenarios',t:' — Traffic Monitoring, Warehouse Safety, Outdoor Security, Retail Analytics. Each defines its own video set, relevant classes, and alert rules.'},{s:'Performance',t:' — ~175 QPS aggregate (6-stream), 3.4 ms GPU compute per inference.'},{s:'LLM alerts',t:' — llama3.1:70b writes incident briefs locally; zero cloud.'}],
+   },
+  {id:2,icon:'🛰️',color:'#1d6fa4',kicker:'Defense · Navy · Intelligence',title:'Maritime Surveillance Intelligence Generator',port:8000,path:'/',
+   desc:'Upload aerial vessel imagery → structured intel report: vessel classification, threat assessment (NONE/LOW/HIGH), synthetic geolocation. Qwen3-VL-8B FP8 via vLLM. Token usage displayed per analysis.',
+   talk:'"This 8-billion parameter multimodal AI is analyzing this image — and the imagery never left this machine. This works aboard a ship at sea with zero connectivity."',
+   pts:[{s:'Data sovereignty',t:' — imagery never leaves the secure environment.'},{s:'Air-gap ready',t:' — functions aboard ships, in SCIFs, or any disconnected environment.'},{s:'Token cost transparency',t:' — on cloud, billable. Here, free.'},{s:'Two sample scenarios',t:' — cruise ship (LOW) and naval vessel (HIGH).'}],
+   },
+  {id:3,icon:'💊',color:'#0d7e6e',kicker:'Healthcare · Clinical Decision Support',title:'Clinical Drug Interaction Analysis',port:8000,path:'/',
+   desc:'Mixtral-8x7B (47B params) via Ollama with RAG-augmented clinical DDI database (302k interactions). Simple two-drug or complex polypharmacy analysis with severity classification, mechanism, monitoring, and alternatives.',
+   talk:'"47 billion parameters running entirely on-prem. Clinical DDI database embedded locally — 302,000 drug interactions retrieved in milliseconds. Enter any drug combination: severity sourced from the database, clinical narrative generated by the model. No data leaves the device."',
+   pts:[{s:'RAG-augmented DDI database',t:' — 302,000 clinically validated interactions, fully on-device.'},{s:'Complex polypharmacy',t:' — multi-drug cases with age, conditions, and lab values.'},{s:'HIPAA-compliant',t:' — patient data and drug queries never leave the Nano.'},{s:'Air-gapped capable',t:' — no internet required after initial setup.'}],
+   },
+  {id:4,icon:'🔐',color:'#6d3eb0',kicker:'Enterprise · Data Governance',title:'PII Detection & Masking — Fine-Tuning Demo',port:8000,path:'/app/',
+   desc:'Side-by-side: base TinyLlama vs. fine-tuned Qwen2.5-32B PII detector. 6× accuracy improvement, live. Makes fine-tuning tangible for any compliance buyer.',
+   talk:'"6× better accuracy, running locally. Sensitive data never leaves your infrastructure."',
+   pts:[{s:'6× accuracy improvement',t:' — fine-tuned vs. base model, demonstrated live.'},{s:'Regulatory compliance',t:' — GDPR, HIPAA, CCPA.'},{s:'Fine-tuning story',t:' — opens door to domain-specific customization.'},{s:'100% local',t:' — sensitive data never leaves the customer.'}],
+   },
+  {id:5,icon:'🏗️',color:'#c2520e',kicker:'AEC · Construction · Safety',title:'Construction Safety AI Assistant',port:8080,path:'/',
+   desc:'Voice-enabled OSHA safety Q&A — PPE, fall protection, confined spaces, LOTO, cranes. Offline fallback mode, no connectivity required on job site.',
+   talk:'"A site foreman with no WiFi asks a safety question by voice and gets an instant, accurate answer from a workstation in the job trailer."',
+   pts:[{s:'Voice-first',t:' — hands-free with speech recognition and TTS audio responses.'},{s:'Offline fallback',t:' — works immediately even with no AI model loaded.'},{s:'Full OSHA coverage',t:' — PPE, fall protection, scaffold, excavation, LOTO, cranes.'},{s:'Fine-tuning potential',t:' — customer-specific vertical AI models.'}],
+   },
+  {id:6,icon:'🌐',color:'#b07d10',kicker:'Enterprise · Language Services',title:'Private Document Translation',port:8080,path:'/',
+   desc:'54 language pairs via Meta NLLB-200, running entirely on the Nano. Legal, government, and HR documents translated with zero data egress.',
+   talk:'"Instant, private, on-premises AI translation in 27 languages — no content ever reaching external servers."',
+   pts:[{s:'54 language pairs',t:' — Arabic, Chinese, French, German, Japanese, Korean, Spanish, Russian, and 19 more.'},{s:'Zero data egress',t:' — content never reaches external servers.'},{s:'On-demand loading',t:' — load/unload to optimize memory.'},{s:'Clear ROI',t:' — displaces per-word cloud translation fees.'}],
+   },
+  {id:7,icon:'🤖',color:'#0096d6',kicker:'Healthcare · Robotics',title:'Robotic Medical Triage Voice Agent',port:8090,path:'/',
+   desc:'Fully local voice triage on HP ZGX Nano + Pollen Robotics Reachy Mini. Whisper STT on GPU (sm_121), Llama 3.1 8B AWQ via vLLM, Piper TTS. Sub-2-second response. Zero cloud APIs.',
+   talk:'"All speech recognition, language understanding, and speech synthesis run on this HP ZGX Nano. Total response time is under two seconds. The patient\'s data never leaves this room."',
+   pts:[{s:'Sub-2-second response',t:' — whisper.cpp CUDA for Blackwell (sm_121) is 50× faster than CPU.'},{s:'Fully air-gapped',t:' — works with zero internet. Critical for HIPAA, government, and defense.'},{s:'Expressive robot presence',t:' — antenna and head movements show listening, thinking, and speaking states.'},{s:'Live transcript dashboard',t:' — real-time display with token counter, export as medical record.'}],
+   },
+];
+
+// Maps a DEMOS entry's numeric id → the string demo key used by openDemo /
+// PORT_CONFLICTS / PORT_PATHS (which are string-keyed, e.g. 'vision').
+const DEMO_KEY_BY_ID=['pipeline','vision','maritime','pharmacy','pii','construction','translation','medical'];
+
+function openModal(idx){
+  const d=DEMOS[idx];
+  document.getElementById('modalAccent').style.background=d.color;
+  const pts=d.pts.map(p=>`<div class="kp"><div class="kp-dot" style="background:${d.color}"></div><div class="kp-text"><strong>${p.s}</strong>${p.t}</div></div>`).join('');
+  // Route through openDemo(key) so the demo opens INSIDE the iframe shell (and
+  // stays inside the fullscreen kiosk) — never a bare new tab/window that could
+  // escape the shell. openDemo is string-keyed, so map d.id→key. closeModal()
+  // first so we return to the grid behind it.
+  const dkey=DEMO_KEY_BY_ID[d.id];
+  const lb=d.port?`<button type="button" onclick="closeModal();openDemo('${dkey}')" class="btn btn-primary" style="background:${d.color}">Launch — :${d.port} ›</button>`:`<span class="btn btn-ghost">No Web UI — CLI only</span>`;
+  document.getElementById('modalContent').innerHTML=`
+    <div class="modal-hdr"><div class="modal-ico" style="background:color-mix(in srgb,${d.color} 10%,transparent)">${d.icon}</div><div><div class="modal-kicker">${d.kicker}</div><div class="modal-title">${d.title}</div></div></div>
+    <div style="margin-bottom:16px"><div class="sec-lbl">Overview</div><p style="font-size:12px;color:var(--dim);line-height:1.7">${d.desc}</p></div>
+    <div style="margin-bottom:16px"><div class="sec-lbl">Talk Track</div><div class="talk-track" style="--mc:${d.color}"><p>${d.talk}</p></div></div>
+    <div><div class="sec-lbl">Key Selling Points</div><div class="kps">${pts}</div></div>
+    <div class="modal-foot">${lb}</div>`;
+  document.getElementById('modalBg').classList.add('open');
+}
+function closeModal(){document.getElementById('modalBg').classList.remove('open');}
+function closeMBg(e){if(e.target===document.getElementById('modalBg'))closeModal();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+</script>
+</body>
+</html>

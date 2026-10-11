@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafetyBot - Construction Safety Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .header h1 {
+            color: #FF6B00;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header .subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        .connection-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 10px 15px;
+            border-radius: 5px;
+            z-index: 1000;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: slideInRight 0.3s ease;
+        }
+        
+        .connection-status.connected {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .connection-status.disconnected {
+            background: #f44336;
+            color: white;
+        }
+        
+        .connection-status.offline-mode {
+            background: #FF9800;
+            color: white;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .voice-button {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FF6B00, #FF8E53);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 2rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 107, 0, 0.3);
+        }
+        
+        .voice-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 107, 0, 0.4);
+        }
+        
+        .voice-button.listening {
+            animation: pulse 1.5s infinite;
+            background: linear-gradient(135deg, #CC5500, #FF6B00);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .voice-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .quick-btn {
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .quick-btn:hover {
+            background: #FF6B00;
+            color: white;
+            border-color: #FF6B00;
+            transform: translateY(-2px);
+        }
+        
+        .quick-btn .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .input-area {
+            margin-bottom: 2rem;
+        }
+        
+        .text-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .text-input:focus {
+            outline: none;
+            border-color: #FF6B00;
+        }
+        
+        .response-area {
+            background: #f0f9ff;
+            border-left: 4px solid #4CAF50;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .response-area.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .response-area.offline-response {
+            background: #fff8e1;
+            border-left-color: #FF9800;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .response-header {
+            color: #4CAF50;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .response-header.offline {
+            color: #FF9800;
+        }
+        
+        .response-text {
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .response-mode {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+        
+        .speak-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+        
+        .speak-btn:hover {
+            background: #45a049;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            display: none;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #FF6B00;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .emergency-banner {
+            background: #D32F2F;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            border-radius: 10px;
+            margin-top: 2rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+        
+        .emergency-banner:hover {
+            background: #B71C1C;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🦺 Donnelly Construction Safety App</h1>
+            <p class="subtitle">Powered by HP ZGX Nano</p>
+        </div>
+        
+        <div class="quick-actions">
+            <button class="quick-btn" onclick="askQuestion('What PPE do I need?')">
+                <span class="icon">⛑️</span>
+                <span>PPE Check</span>
+            </button>
+            <button class="quick-btn" onclick="askQuestion('Ladder safety rules?')">
+                <span class="icon">🪜</span>
+                <span>Ladder Safety</span>
+            </button>
+            <button class="quick-btn" onclick="askQuestion('Emergency procedures?')">
+                <span class="icon">🚨</span>
+                <span>Emergency</span>
+            </button>
+            <button class="quick-btn" onclick="askQuestion('Hot work permit requirements?')">
+                <span class="icon">🔥</span>
+                <span>Hot Work</span>
+            </button>
+        </div>
+        
+        <!-- Voice input removed — browser Web Speech API routes audio to Google's cloud STT, which breaks the air-gapped story. Could be rewired later to getUserMedia -> local Whisper on the Nano. -->
+
+        <div class="input-area">
+            <input 
+                type="text" 
+                class="text-input" 
+                id="textInput" 
+                placeholder="Type your safety question here..."
+                onkeypress="handleKeyPress(event)"
+            />
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 1rem; color: #666;">Getting safety information...</p>
+        </div>
+        
+        <div class="response-area" id="responseArea">
+            <div class="response-header" id="responseHeader">Safety Guidance:</div>
+            <div class="response-text" id="responseText"></div>
+            <div class="response-mode" id="responseMode"></div>
+            <button class="speak-btn" onclick="speakResponse()">🔊 Read Aloud</button>
+        </div>
+        
+        <div class="emergency-banner" onclick="showEmergency()">
+            🚨 EMERGENCY ASSISTANCE
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = 'http://' + window.location.hostname + ':8191';
+        let isListening = false;
+        let currentResponse = '';
+        let backendStatus = 'checking';
+        let isModelLoaded = false;
+        
+        // Offline fallback responses
+        const OFFLINE_RESPONSES = {
+            'ppe': 'Required PPE includes hard hat (ANSI Z89.1 compliant), safety glasses, high-visibility vest, steel-toed boots, and work gloves. Additional PPE required based on specific tasks.',
+            'ladder': 'Maintain three points of contact at all times. Inspect before each use. Set at 4:1 ratio. Extend 3 feet above landing. Never exceed weight rating. Always face ladder when climbing.',
+            'emergency': 'Call 911 immediately for serious injuries. Alert site supervisor. Do not move injured persons unless in immediate danger. Evacuate to designated assembly point. Account for all personnel.',
+            'hot work': 'Obtain hot work permit before starting. Clear area of combustibles within 35 feet. Have fire watch during and 30 minutes after work. Keep fire extinguisher readily available.',
+            'fall': 'Use OSHA-approved fall protection when working 6+ feet above ground. Inspect harnesses before each use. Ensure anchor points rated for 5,000 lbs. Maintain 100% tie-off.',
+            'scaffold': 'Scaffolds must be erected by competent persons only. Inspect before each shift. Ensure proper guardrails and planking. Never exceed rated load capacity.',
+            'electrical': 'De-energize and lockout/tagout all energy sources. Test with meter to verify zero energy. Each worker applies own lock. Follow written LOTO procedures.',
+            'default': 'This is an important safety question. For immediate guidance, consult your site safety officer or refer to your company\'s safety manual.'
+        };
+        
+        // Test connection on load
+        window.onload = async function() {
+            await checkBackendConnection();
+            
+            // Re-check connection every 5 seconds
+            setInterval(checkBackendConnection, 5000);
+        };
+        
+        async function checkBackendConnection() {
+            try {
+                const response = await fetch(`${API_URL}/`);
+                const data = await response.json();
+                console.log('Backend status:', data);
+                
+                backendStatus = 'connected';
+                isModelLoaded = data.model_loaded;
+                
+                showConnectionStatus(
+                    isModelLoaded ? 'connected' : 'offline-mode',
+                    isModelLoaded ? '✓ AI Model Active' : '⚠️ Offline Mode Active'
+                );
+                
+            } catch (error) {
+                console.error('Backend not connected:', error);
+                backendStatus = 'disconnected';
+                isModelLoaded = false;
+                
+                showConnectionStatus('disconnected', '⚠️ Running Locally Only');
+            }
+        }
+        
+        function showConnectionStatus(statusClass, message) {
+            // Remove existing status
+            const existingStatus = document.querySelector('.connection-status');
+            if (existingStatus) {
+                existingStatus.remove();
+            }
+            
+            // Create new status
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `connection-status ${statusClass}`;
+            statusDiv.textContent = message;
+            document.body.appendChild(statusDiv);
+            
+            // Auto-hide after 3 seconds if connected
+            if (statusClass === 'connected') {
+                setTimeout(() => statusDiv.remove(), 3000);
+            }
+        }
+        
+        // Voice input removed — browser Web Speech API routes audio to Google's cloud STT,
+        // which breaks the air-gapped story. Could be rewired later to getUserMedia -> local
+        // Whisper on the Nano. The typed Q&A (askQuestion -> POST /ask) and local speechSynthesis
+        // read-aloud below remain the supported, fully-offline paths.
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                const question = document.getElementById('textInput').value;
+                if (question.trim()) {
+                    askQuestion(question);
+                }
+            }
+        }
+        
+        async function askQuestion(question) {
+            document.getElementById('textInput').value = question;
+            document.getElementById('loading').classList.add('active');
+            document.getElementById('responseArea').classList.remove('active');
+            
+            // Try backend first if connected
+            if (backendStatus === 'connected') {
+                try {
+                    const response = await fetch(`${API_URL}/ask`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            question: question,
+                            context: 'General Construction Site'
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    currentResponse = data.answer;
+                    
+                    displayResponse(currentResponse, data.mode === 'ai' ? 'AI Model' : 'Offline Database');
+                    
+                } catch (error) {
+                    console.error('API Error:', error);
+                    // Fallback to local responses
+                    handleOfflineResponse(question);
+                }
+            } else {
+                // Use offline responses
+                handleOfflineResponse(question);
+            }
+        }
+        
+        function handleOfflineResponse(question) {
+            const questionLower = question.toLowerCase();
+            let response = OFFLINE_RESPONSES.default;
+            
+            // Find best matching response
+            for (const [key, value] of Object.entries(OFFLINE_RESPONSES)) {
+                if (questionLower.includes(key)) {
+                    response = value;
+                    break;
+                }
+            }
+            
+            currentResponse = response;
+            displayResponse(response, 'Local Safety Database');
+        }
+        
+        function displayResponse(response, mode) {
+            document.getElementById('responseText').textContent = response;
+            document.getElementById('responseMode').textContent = `Source: ${mode}`;
+            
+            const responseArea = document.getElementById('responseArea');
+            const responseHeader = document.getElementById('responseHeader');
+            
+            if (mode === 'Local Safety Database') {
+                responseArea.classList.add('offline-response');
+                responseHeader.classList.add('offline');
+                responseHeader.textContent = 'Safety Guidance (Offline):';
+            } else {
+                responseArea.classList.remove('offline-response');
+                responseHeader.classList.remove('offline');
+                responseHeader.textContent = 'Safety Guidance:';
+            }
+            
+            document.getElementById('loading').classList.remove('active');
+            responseArea.classList.add('active');
+            
+            // Auto-speak if it was a voice query
+            if (isListening) {
+                speakResponse();
+            }
+        }
+        
+        function speakResponse() {
+            if ('speechSynthesis' in window && currentResponse) {
+                // Cancel any ongoing speech
+                speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(currentResponse);
+                utterance.rate = 0.9; // Slightly slower for clarity
+                utterance.pitch = 1;
+                utterance.volume = 1;
+                
+                // Add error handling
+                utterance.onerror = function(event) {
+                    console.error('Speech synthesis error:', event);
+                };
+                
+                speechSynthesis.speak(utterance);
+            }
+        }
+        
+        function showEmergency() {
+            const message = `EMERGENCY PROCEDURES:
+
+1. Call 911 immediately
+2. Alert site supervisor
+3. Clear the area  
+4. Do not move injured persons unless in immediate danger
+5. Provide first aid if trained
+
+Site Emergency Number: 555-0100
+Safety Manager: 555-0101`;
+            
+            alert(message);
+            
+            // Also speak emergency instructions
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance('Emergency! Call 911 immediately and alert site supervisor.');
+                utterance.rate = 0.8;
+                utterance.volume = 1;
+                speechSynthesis.speak(utterance);
+            }
+        }
+    </script>
+<script>
+// Demo Center iframe escape relay
+(function() {
+  if (window.parent === window) return; // not iframed, do nothing
+  window.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      window.parent.postMessage({ type: 'demo-shell-return' }, '*');
+    }
+  });
+})();
+</script>
+</body>
+</html>
